@@ -1,0 +1,105 @@
+import numpy as np
+
+def ordem_rotulos_primeiro(rotulos):
+
+  #pegar posições existe rotulo
+  posicoes_rotulos = []
+  for i in range(rotulos.shape[0]):
+    if not np.all(rotulos[i] == 0):
+        posicoes_rotulos.append(i)
+
+  # Reordenar as posições para os rotulados vim primeiro
+  ordemObjetos = np.arange(rotulos.shape[0])
+  # Retira dos indices os que são rotulados
+  ordemObjetos = np.setdiff1d(ordemObjetos, posicoes_rotulos)
+  # ordemObjetos será uma lista onde os indices dos objetos rotulados
+  # vem primeiro, depois o resto em ordem crescente de indice
+  ordemObjetos = np.concatenate((posicoes_rotulos,ordemObjetos))
+
+  return posicoes_rotulos, ordemObjetos
+
+def divisao_L(L,rotulos,posicoes_rotulos, ordemObjetos):
+
+    ## Reordenacao da matriz Laplaciana, para manter os dados rotulados à frente
+    L = L[ordemObjetos,:]
+    L = L[:, ordemObjetos]
+
+    # Armazenar numero de objetos rotulados, nao rotulados e total de objetos
+    nRotulado = len(posicoes_rotulos)
+    nNaoRotulado = L.shape[0]-nRotulado
+    nObjetos = L.shape[0]
+
+    # Extracao das submatrizes da matriz laplaciana
+    LRotulado = L[0:nRotulado, 0:nRotulado]
+    LNaoRotuladoRotulado = L[nRotulado:nObjetos, 0:nRotulado]
+    LNaoRotulado = L[nRotulado:nObjetos, nRotulado:nObjetos]
+
+    return LRotulado, LNaoRotuladoRotulado, LNaoRotulado
+
+# GRF para calcular a matriz de rótulos propagados
+# entrada: matriz de pesos, matriz de rótulos
+# saída: matriz de rótulos propagados
+def GRF(W,rotulos):
+
+  # Calculo da matriz diagonal: Uma matriz de grau de cada um dos vertices
+  D = np.zeros(W.shape)
+  np.fill_diagonal(D, np.sum(W, axis=1))
+  # Calculo da matriz laplaciana
+  L= D - W
+
+  posicoes_rotulos, ordemObjetos = ordem_rotulos_primeiro(rotulos)
+
+  # Extracao das submatrizes da matriz laplaciana
+  LRotulado, LNaoRotuladoRotulado, LNaoRotulado = divisao_L(L,rotulos,posicoes_rotulos,ordemObjetos)
+
+  # da forma: [[],[],[],[],...,[]]
+  yl = rotulos[posicoes_rotulos]
+  resultado = np.zeros((rotulos.shape[0],1),dtype=int)
+
+  # classes
+  classes = []
+  for k in range(len(yl)):
+    if not yl[k][0] in classes:
+      classes.append(yl[k][0])
+
+  # Os rotulos originais continuam da mesma forma
+  for i in range(len(posicoes_rotulos)):
+    resultado[ordemObjetos[i]] = yl[i,0]
+
+  # Pela quantidade de classes, one-vesus-all
+  for i in range(len(classes)):
+    # rotulo da vez
+    rotulo = classes[i]
+    print(rotulo)
+    # transforma rotulo da vez 1, resto -1
+    yl_one_versus_all = np.zeros((yl.shape[0],1))
+    for j in range(yl.shape[0]):
+        if yl[j][0] == rotulo:
+          yl_one_versus_all[j][0] = 1
+        else:
+          yl_one_versus_all[j][0] = -1
+    
+
+    f = -np.linalg.inv(LNaoRotulado).dot(LNaoRotuladoRotulado.dot(yl_one_versus_all))
+
+    # Formatacao dos dados nao rotulados
+    ordemNaoRotulado = ordemObjetos[len(posicoes_rotulos):]
+    for i in range(len(ordemNaoRotulado)):
+       # O que propagou foi o positivo (1)
+       if 1*np.sign(f[i,0]) >= 0:
+          resultado[ordemNaoRotulado[i]]= rotulo
+       else:
+          # Ele não tinha rotulo?
+          if resultado[ordemNaoRotulado[i]] == 0:
+            resultado[ordemNaoRotulado[i]] = -1
+          # se já tem rotulo continua o antigo pq já foi propagado antes,
+          # o que faz sentido ser -1 agora
+          # pq o antigo agora faz parte do -1    
+
+  return resultado
+
+
+def propagar(W,rotulos,algoritmo = "GRF"):
+   
+   if algoritmo == "GRF":
+      return GRF(W,rotulos)
