@@ -55,7 +55,14 @@ matriz_peso = matriz_pesos(matriz_adjacencias,matriz_distancias,0.2)
 #print(matriz_pesos)
 
 print('----------Propagação GRF------------------------------')
-rotulos_propagados = propagar(matriz_peso,rotulos_semissupervisionado)
+# classes
+classes = []
+for k in range(len(rotulos)):
+  if not rotulos[k] in classes:
+      classes.append(rotulos[k])
+omega =   np.random.rand(len(classes),1)
+
+rotulos_propagados = propagar(matriz_peso,rotulos_semissupervisionado,omega,"RMGT")
 print('Rotulos originais:')
 print(rotulos)
 print('Rotulos faltando:')
