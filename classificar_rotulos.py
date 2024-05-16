@@ -176,11 +176,69 @@ def RMGT(W,rotulos,omega):
   return resultado
 
 
+# LGC para calcular a matriz de rótulos propagados
+# entrada: matriz de pesos, vetor de rótulos e parametro regularização
+# saída: vetor de rótulos propagados
+def LGC(W,rotulos,parametro_regularizacao):
 
-def propagar(W,rotulos,omega = 0, algoritmo = "GRF"):
+  print("inicializando LGC...")
+
+  # Calculo da matriz diagonal: Uma matriz de grau de cada um dos vertices
+  D = np.zeros(W.shape)
+  np.fill_diagonal(D, np.sum(W, axis=1))
+  # Calculo da matriz laplaciana
+  L= D - W
+
+  # Calculo da laplaciana normalizada
+  matriz_identidade = np.eye(W.shape[0])
+  D_inv_raiz = np.diag(1 / np.sqrt(np.diag(D)))
+  L_normalizada = matriz_identidade - D_inv_raiz.dot(W.dot(D_inv_raiz))
+
+  resultado = np.zeros((rotulos.shape[0],1),dtype=int)
+
+  # classes
+  classes = []
+  for k in range(len(rotulos)):
+    if rotulos[k][0] != 0:
+      if not rotulos[k][0] in classes:
+        classes.append(rotulos[k][0])
+
+  # Pela quantidade de classes, one-vesus-all
+  for i in range(len(classes)):
+    # rotulo da vez
+    rotulo = classes[i]
+    print(rotulo)
+    # transforma rotulo da vez 1, resto -1
+    y_one_versus_all = np.zeros((rotulos.shape[0],1))
+    for j in range(rotulos.shape[0]):
+        if rotulos[j][0] == rotulo:
+          y_one_versus_all[j][0] = 1
+        else:
+          y_one_versus_all[j][0] = -1
+  
+    f = np.linalg.inv(matriz_identidade - L_normalizada/parametro_regularizacao).dot(y_one_versus_all)
+
+    for i in range(f.shape[0]):
+       # O que propagou foi o positivo (1)
+       if 1*np.sign(f[i,0]) >= 0:
+          resultado[i]= rotulo
+       else:
+          # Ele não tinha rotulo?
+          if resultado[i] == 0:
+            resultado[i] = -1
+          # se já tem rotulo continua o antigo pq já foi propagado antes,
+          # o que faz sentido ser -1 agora
+          # pq o antigo agora faz parte do -1
+
+  return resultado
+
+def propagar(W,rotulos,omega = 0, parametro_regularizacao = 0.01, algoritmo = "GRF"):
    
    if algoritmo == "GRF":
       return GRF(W,rotulos)
    
    elif algoritmo == "RMGT":
       return RMGT(W,rotulos,omega)
+   
+   elif algoritmo == "LGC":
+      return LGC(W,rotulos,parametro_regularizacao)
