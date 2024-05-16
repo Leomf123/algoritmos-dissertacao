@@ -23,7 +23,7 @@ rotulos = rotulos + 1
 
 # Como eu preciso de rotulos faltando, que serão classificados
 # retiro a quantidade dado uma porcentagem ( de 0 a 1 )
-porcentagem_manter = 0.5
+porcentagem_manter = 0.1
 rotulos_semissupervisionado = retirar_rotulos(rotulos, porcentagem_manter)
 
 print("------rotulos faltando---------")
@@ -51,7 +51,9 @@ matriz_adjacencias = matriz_adjacencia(matriz_distancias,2,'symKNN')
 #print(matriz_adjacencia)
 
 print('------------------Pesos----------------------------------')
-matriz_peso = matriz_pesos(matriz_adjacencias,matriz_distancias,0.2)
+omega = 0.2
+k = 2
+matriz_peso = matriz_pesos(matriz_adjacencias,matriz_distancias,omega,k,"HM")
 #print(matriz_pesos)
 
 print('----------Propagação GRF------------------------------')
@@ -64,7 +66,7 @@ omega =   np.random.rand(len(classes),1)
 
 parametro_regularizacao = 0.01
 
-rotulos_propagados = propagar(matriz_peso,rotulos_semissupervisionado,omega,parametro_regularizacao,"LGC")
+rotulos_propagados = propagar(matriz_peso,rotulos_semissupervisionado,omega,parametro_regularizacao,"GRF")
 print('Rotulos originais:')
 print(rotulos)
 print('Rotulos faltando:')
