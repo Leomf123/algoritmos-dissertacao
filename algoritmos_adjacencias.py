@@ -5,6 +5,8 @@ import numpy as np
 # saida: matriz de adjacencia
 def knn(matriz_distancia,k,tipo):
 
+  print("inicializando KNN... ")
+
   matriz_adjacencia = np.zeros((matriz_distancia.shape[0],matriz_distancia.shape[1]))
 
   for i in range(matriz_distancia.shape[0]):
@@ -40,7 +42,7 @@ def knn(matriz_distancia,k,tipo):
   return matriz_adjacencia
 
 
-def matriz_adjacencia(matriz_distancia,k = 4,tipo = 'mutKNN',algoritmo = 'KNN'):
+def gerar_matriz_adjacencias(matriz_distancia,k = 4,tipo = 'mutKNN',algoritmo = 'KNN'):
   
   if algoritmo == 'KNN':
 

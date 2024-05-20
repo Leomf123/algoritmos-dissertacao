@@ -37,11 +37,11 @@ def divisao_L(L,rotulos,posicoes_rotulos, ordemObjetos):
     return LRotulado, LNaoRotuladoRotulado, LNaoRotulado
 
 # GRF para calcular a matriz de rótulos propagados
-# entrada: matriz de pesos, matriz de rótulos
+# entrada: matriz de pesos, rótulos
 # saída: matriz de rótulos propagados
 def GRF(W,rotulos):
 
-  print("inicializando GRF ... ")
+  print("inicializando GRF... ")
 
   # Calculo da matriz diagonal: Uma matriz de grau de cada um dos vertices
   D = np.zeros(W.shape)
@@ -101,12 +101,12 @@ def GRF(W,rotulos):
   return resultado
 
 
-# GRF para calcular a matriz de rótulos propagados
-# entrada: matriz de pesos, matriz de rótulos
+# RMGT para calcular a matriz de rótulos propagados
+# entrada: matriz de pesos, rótulos e omega
 # saída: matriz de rótulos propagados
 def RMGT(W,rotulos,omega):
 
-  print("inicializando RMGT ... ")
+  print("inicializando RMGT... ")
 
   # Calculo da matriz diagonal: Uma matriz de grau de cada um dos vertices
   D = np.zeros(W.shape)
@@ -177,7 +177,7 @@ def RMGT(W,rotulos,omega):
 
 
 # LGC para calcular a matriz de rótulos propagados
-# entrada: matriz de pesos, vetor de rótulos e parametro regularização
+# entrada: matriz de pesos, rótulos e parametro regularização
 # saída: vetor de rótulos propagados
 def LGC(W,rotulos,parametro_regularizacao):
 

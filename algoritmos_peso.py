@@ -2,11 +2,11 @@ import numpy as np
 
 
 # RBF Kernel para calcular a matriz de pesos
-# entrada: matriz de adjacencias, matriz de distancias, sigma
+# entrada: matriz de adjacencias, matriz de distancias e sigma
 # saída: matriz de pesos
 def RBF(matriz_adjacencia,matriz_distancia,sigma):
 
-  print("Iniciando RBF...")
+  print("inicializando RBF...")
 
   matriz_pesos = np.zeros((matriz_adjacencia.shape[0],matriz_adjacencia.shape[1]))
 
@@ -22,7 +22,7 @@ def RBF(matriz_adjacencia,matriz_distancia,sigma):
 # saída: matriz de pesos
 def HM(matriz_adjacencia,matriz_distancia,k):
 
-  print("Iniciando HM...")
+  print("Inicializando HM...")
 
   matriz_pesos = np.zeros((matriz_adjacencia.shape[0],matriz_adjacencia.shape[1]))
 
@@ -36,7 +36,7 @@ def HM(matriz_adjacencia,matriz_distancia,k):
   return matriz_pesos
 
 
-def matriz_pesos(matriz_adjacencia,matriz_distancia,sigma = 0.2,k = 2, algoritmo = "RBF"):
+def gerar_matriz_pesos(matriz_adjacencia,matriz_distancia,sigma = 0.2,k = 2, algoritmo = "RBF"):
   
   if algoritmo == "RBF":
     return RBF(matriz_adjacencia,matriz_distancia,sigma)
