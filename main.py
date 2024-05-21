@@ -11,9 +11,9 @@ from algoritmos_peso import gerar_matriz_pesos
 from algoritmos_classificar import propagar
 from processar_rotulos import acuracia
 
-random.seed(100)
+random.seed(200)
 
-dados, rotulos = make_blobs(n_samples=300, cluster_std = 1 ,centers=3, n_features=2, random_state=0)
+dados, rotulos = make_blobs(n_samples=1000, cluster_std = 1 ,centers=3, n_features=2, random_state=0)
 
 # Pré-processamento do rotulos para classificação semissupervisionada
 # Primeiro: como o 0 nos rotulos vão representar que não tem rótulo tenho
@@ -29,7 +29,7 @@ for k in range(len(rotulos)):
 
 # Como eu preciso de rotulos faltando, que serão classificados
 # retiro a quantidade dado uma porcentagem ( de 0 a 1 )
-porcentagem_manter = 0.1
+porcentagem_manter = 0.01
 rotulos_semissupervisionado = retirar_rotulos(rotulos, porcentagem_manter,classes)
 
 print("------rotulos faltando---------")
@@ -37,8 +37,6 @@ print(rotulos_semissupervisionado)
 
 # Preciso transformar o vetor de rotulos numa matriz de 1 coluna
 # pra ser processado pelos algoritmos
-rotulos_semissupervisionado = np.array(rotulos_semissupervisionado)
-
 # Transformar o array em uma matriz onde cada elemento do array é uma linha
 rotulos_semissupervisionado = rotulos_semissupervisionado.reshape(-1, 1)
 #print(rotulos_semissupervisionado)
@@ -57,17 +55,17 @@ matriz_adjacencias = gerar_matriz_adjacencias(matriz_distancias,2,'symKNN')
 #print(matriz_adjacencias)
 
 print('------------------Pesos----------------------------------')
-omega = 0.2
+sigma = 0.2
 k = 2
-matriz_pesos = gerar_matriz_pesos(matriz_adjacencias,matriz_distancias,0.2,k,"RBF")
+matriz_pesos = gerar_matriz_pesos(matriz_adjacencias,matriz_distancias,sigma,k,"RBF")
 #print(matriz_pesos)
 
 print('----------Propagação GRF------------------------------')
-omega =   np.random.rand(len(classes),1)
+omega =  np.random.rand(len(classes),1)
 
 parametro_regularizacao = 0.01
 
-rotulos_propagados = propagar(matriz_pesos,rotulos_semissupervisionado,omega,parametro_regularizacao,"GRF")
+rotulos_propagados = propagar(matriz_pesos,rotulos_semissupervisionado,omega,parametro_regularizacao,"RMGT")
 print('Rotulos originais:')
 print(rotulos)
 print('Rotulos faltando:')
