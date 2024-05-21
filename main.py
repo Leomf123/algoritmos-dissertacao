@@ -4,14 +4,14 @@ from sklearn.datasets import make_blobs
 import numpy as np
 import random
 
-from tratar_rotulos import retirar_rotulos 
+from processar_rotulos import retirar_rotulos 
 from utils import gerar_matriz_distancias
 from algoritmos_adjacencias import gerar_matriz_adjacencias 
 from algoritmos_peso import gerar_matriz_pesos
 from algoritmos_classificar import propagar
-from tratar_rotulos import acuracia
+from processar_rotulos import acuracia
 
-random.seed(200)
+random.seed(100)
 
 dados, rotulos = make_blobs(n_samples=300, cluster_std = 1 ,centers=3, n_features=2, random_state=0)
 
@@ -21,10 +21,16 @@ dados, rotulos = make_blobs(n_samples=300, cluster_std = 1 ,centers=3, n_feature
 # somando 1, ou seja, 0 será 1, 1 será 2, etc
 rotulos = rotulos + 1
 
+# classes
+classes = []
+for k in range(len(rotulos)):
+  if not rotulos[k] in classes:
+      classes.append(rotulos[k])
+
 # Como eu preciso de rotulos faltando, que serão classificados
 # retiro a quantidade dado uma porcentagem ( de 0 a 1 )
-porcentagem_manter = 0.02
-rotulos_semissupervisionado = retirar_rotulos(rotulos, porcentagem_manter)
+porcentagem_manter = 0.1
+rotulos_semissupervisionado = retirar_rotulos(rotulos, porcentagem_manter,classes)
 
 print("------rotulos faltando---------")
 print(rotulos_semissupervisionado)
@@ -39,7 +45,7 @@ rotulos_semissupervisionado = rotulos_semissupervisionado.reshape(-1, 1)
 
 
 # Gerar o grafo com os dados
-print(dados)
+# print(dados)
 
 print('----------Distancias------------------------------')
 matriz_distancias = gerar_matriz_distancias(dados)
@@ -57,11 +63,6 @@ matriz_pesos = gerar_matriz_pesos(matriz_adjacencias,matriz_distancias,0.2,k,"RB
 #print(matriz_pesos)
 
 print('----------Propagação GRF------------------------------')
-# classes
-classes = []
-for k in range(len(rotulos)):
-  if not rotulos[k] in classes:
-      classes.append(rotulos[k])
 omega =   np.random.rand(len(classes),1)
 
 parametro_regularizacao = 0.01
