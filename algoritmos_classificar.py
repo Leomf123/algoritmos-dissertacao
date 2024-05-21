@@ -48,7 +48,7 @@ def GRF(W,rotulos):
   D = np.zeros(W.shape)
   np.fill_diagonal(D, np.sum(W, axis=1))
   # Calculo da matriz laplaciana
-  L= D - W
+  L= 1.01*D - W
 
   posicoes_rotulos, ordemObjetos = ordem_rotulos_primeiro(rotulos)
 
@@ -167,7 +167,56 @@ def LGC(W,rotulos,parametro_regularizacao):
   D = np.zeros(W.shape)
   np.fill_diagonal(D, np.sum(W, axis=1))
   # Calculo da matriz laplaciana
-  L= D - W
+  L = 1.01*D - W
+
+  # Calculo da laplaciana normalizada
+  matriz_identidade = np.eye(W.shape[0])
+  D_inv_raiz = np.diag(1 / np.sqrt(np.diag(D)))
+  L_normalizada = 1.01*matriz_identidade - D_inv_raiz.dot(W.dot(D_inv_raiz))
+
+  # da forma: [[],[],[],[],...,[]]
+  matriz_rotulos = one_hot(rotulos)
+  
+  f = np.linalg.inv(matriz_identidade - L_normalizada*parametro_regularizacao).dot(matriz_rotulos)
+
+  print(f)
+
+  resultado = np.zeros((rotulos.shape[0],1),dtype=int)
+
+  for i in range(f.shape[0]):
+    posicao = np.argmax(f[i,:])
+    resultado[i]= posicao + 1
+
+  return resultado
+
+def propagar(W,rotulos,omega = 0, parametro_regularizacao = 0.99, algoritmo = "GRF"):
+   
+   if algoritmo == "GRF":
+      return GRF(W,rotulos)
+   
+   elif algoritmo == "RMGT":
+      return RMGT(W,rotulos,omega)
+   
+   elif algoritmo == "LGC":
+      return LGC(W,rotulos,parametro_regularizacao)
+
+
+
+
+   """
+   
+# LGC para calcular a matriz de rótulos propagados
+# entrada: matriz de pesos, rótulos e parametro regularização
+# saída: vetor de rótulos propagados
+def LGC(W,rotulos,parametro_regularizacao):
+
+  print("inicializando LGC...")
+
+  # Calculo da matriz diagonal: Uma matriz de grau de cada um dos vertices
+  D = np.zeros(W.shape)
+  np.fill_diagonal(D, np.sum(W, axis=1))
+  # Calculo da matriz laplaciana
+  L = D - W
 
   # Calculo da laplaciana normalizada
   matriz_identidade = np.eye(W.shape[0])
@@ -196,7 +245,9 @@ def LGC(W,rotulos,parametro_regularizacao):
         else:
           y_one_versus_all[j][0] = -1
   
-    f = np.linalg.inv(matriz_identidade - L_normalizada/parametro_regularizacao).dot(y_one_versus_all)
+    f = np.linalg.inv(matriz_identidade + L_normalizada/parametro_regularizacao).dot(y_one_versus_all)
+
+    print(f)
 
     for i in range(f.shape[0]):
        # O que propagou foi o positivo (1)
@@ -211,14 +262,4 @@ def LGC(W,rotulos,parametro_regularizacao):
           # pq o antigo agora faz parte do -1
 
   return resultado
-
-def propagar(W,rotulos,omega = 0, parametro_regularizacao = 0.01, algoritmo = "GRF"):
-   
-   if algoritmo == "GRF":
-      return GRF(W,rotulos)
-   
-   elif algoritmo == "RMGT":
-      return RMGT(W,rotulos,omega)
-   
-   elif algoritmo == "LGC":
-      return LGC(W,rotulos,parametro_regularizacao)
+   """
