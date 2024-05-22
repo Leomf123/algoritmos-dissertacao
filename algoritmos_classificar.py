@@ -177,7 +177,7 @@ def LGC(W,rotulos,parametro_regularizacao):
   # da forma: [[],[],[],[],...,[]]
   matriz_rotulos = one_hot(rotulos)
   
-  f = np.linalg.inv(matriz_identidade - L_normalizada*parametro_regularizacao).dot(matriz_rotulos)
+  f = np.linalg.inv(matriz_identidade + L_normalizada/parametro_regularizacao).dot(matriz_rotulos)
 
   print(f)
 
