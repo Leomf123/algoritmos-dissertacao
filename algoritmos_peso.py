@@ -1,3 +1,4 @@
+from numpy.linalg import solve
 import numpy as np
 
 
@@ -35,11 +36,44 @@ def HM(matriz_adjacencia,matriz_distancia,k):
 
   return matriz_pesos
 
+def LLE(dados,matriz_adjacencia):
 
-def gerar_matriz_pesos(matriz_adjacencia,matriz_distancia,sigma = 0.2,k = 2, algoritmo = "RBF"):
+  print("Inicializando LLE...")
+
+  matriz_pesos = np.zeros((matriz_adjacencia.shape[0],matriz_adjacencia.shape[1]))
+
+  for i in range(dados.shape[0]):
+    
+    # Criar matriz Z com os vizinhos de Xi
+    posicoes = np.where(matriz_adjacencia[i,:] == 1)[0]
+    Z = np.array(dados[posicoes,:])
+    # Subtrair Xi de Z
+    for j in range(Z.shape[0]):
+      Z[j,:] = Z[j,:]-dados[i,:]
+
+    Z = Z.T
+    
+    # Variancia Local
+    C = Z.T @ Z
+
+    C += np.eye(C.shape[0]) + 0.00001
+    
+    # Resolve o sistema linear C * w = 1
+    ones = np.ones(len(posicoes))
+    w = solve(C, ones)
+   
+    for j in range(len(w)):
+      matriz_pesos[i][posicoes[j]] = w[j]/ np.sum(w)
+
+  return matriz_pesos
+
+
+def gerar_matriz_pesos(dados,matriz_adjacencia,matriz_distancia,sigma = 0.2,k = 2, algoritmo = "RBF"):
   
   if algoritmo == "RBF":
     return RBF(matriz_adjacencia,matriz_distancia,sigma)
   
   elif algoritmo == "HM":
     return HM(matriz_adjacencia,matriz_distancia,k)
+  elif algoritmo == "LLE":
+    return LLE(dados,matriz_adjacencia)

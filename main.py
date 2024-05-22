@@ -13,7 +13,7 @@ from processar_rotulos import acuracia
 
 random.seed(200)
 
-dados, rotulos = make_blobs(n_samples=1000, cluster_std = 1 ,centers=3, n_features=2, random_state=0)
+dados, rotulos = make_blobs(n_samples=1000, cluster_std = 0.5 ,centers=3, n_features=2, random_state=0)
 
 # Pré-processamento do rotulos para classificação semissupervisionada
 # Primeiro: como o 0 nos rotulos vão representar que não tem rótulo tenho
@@ -57,15 +57,15 @@ matriz_adjacencias = gerar_matriz_adjacencias(matriz_distancias,2,'symKNN')
 print('------------------Pesos----------------------------------')
 sigma = 0.2
 k = 2
-matriz_pesos = gerar_matriz_pesos(matriz_adjacencias,matriz_distancias,sigma,k,"HM")
+matriz_pesos = gerar_matriz_pesos(dados,matriz_adjacencias,matriz_distancias,sigma,k,"LLE")
 #print(matriz_pesos)
 
-print('----------Propagação GRF------------------------------')
+print('----------Propagação------------------------------')
 omega =  np.random.rand(len(classes),1)
 
 parametro_regularizacao = 0.99
 
-rotulos_propagados = propagar(matriz_pesos,rotulos_semissupervisionado,omega,parametro_regularizacao,"LGC")
+rotulos_propagados = propagar(matriz_pesos,rotulos_semissupervisionado,omega,parametro_regularizacao,"RMGT")
 print('Rotulos originais:')
 print(rotulos)
 print('Rotulos faltando:')
