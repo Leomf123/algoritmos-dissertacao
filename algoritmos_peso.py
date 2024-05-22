@@ -42,16 +42,16 @@ def LLE(dados,matriz_adjacencia):
 
   matriz_pesos = np.zeros((matriz_adjacencia.shape[0],matriz_adjacencia.shape[1]))
 
-  for i in range(dados.shape[0]):
+  X = dados.T
+
+  for i in range(X.shape[1]):
     
     # Criar matriz Z com os vizinhos de Xi
     posicoes = np.where(matriz_adjacencia[i,:] == 1)[0]
-    Z = np.array(dados[posicoes,:])
+    Z = np.array(X[:,posicoes])
     # Subtrair Xi de Z
-    for j in range(Z.shape[0]):
-      Z[j,:] = Z[j,:]-dados[i,:]
-
-    Z = Z.T
+    for j in range(Z.shape[1]):
+      Z[:,j] = Z[:,j]-X[:,i]
     
     # Variancia Local
     C = Z.T @ Z
@@ -64,6 +64,8 @@ def LLE(dados,matriz_adjacencia):
    
     for j in range(len(w)):
       matriz_pesos[i][posicoes[j]] = w[j]/ np.sum(w)
+
+  matriz_pesos = 1/2*(matriz_pesos + matriz_pesos.T)
 
   return matriz_pesos
 

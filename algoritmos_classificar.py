@@ -151,7 +151,7 @@ def RMGT(W,rotulos,omega):
   ordemNaoRotulado = ordemObjetos[len(posicoes_rotulos):]
   for i in range(len(ordemNaoRotulado)):
     posicao = np.argmax(f[i,:])
-    resultado[ordemNaoRotulado[i]]= posicao+1
+    resultado[ordemNaoRotulado[i]]= posicao + 1
 
   return resultado
 

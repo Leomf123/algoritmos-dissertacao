@@ -34,13 +34,24 @@ def acuracia(rotulos_originais, rotulos_propagados,rotulos_semissupervisionado):
 
   denominador = 0
   numerador = 0
+  denominador2 = 0
+  numerador2 = 0
 
   for i in range(rotulos_originais.shape[0]):
     if rotulos_semissupervisionado[i] == 0:
       denominador += 1
       if rotulos_originais[i] == rotulos_propagados[i]:
         numerador = numerador + 1
+    else:
+      denominador2 +=1
+      if rotulos_originais[i] == rotulos_propagados[i]:
+        numerador2 += 1
 
+  print("rotulados já")
+  print(denominador2)
+  print(numerador2)
+  print(numerador2/denominador2)
+  print("nao rotulados já")
   print(denominador)
   print(numerador)
   
