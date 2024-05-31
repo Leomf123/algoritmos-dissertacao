@@ -46,7 +46,8 @@ rotulos_semissupervisionado = rotulos_semissupervisionado.reshape(-1, 1)
 # print(dados)
 
 print('----------Distancias------------------------------')
-matriz_distancias = gerar_matriz_distancias(dados)
+medida_distancia = 'euclidean'
+matriz_distancias = gerar_matriz_distancias(dados, dados, medida_distancia)
 #print(matriz_distancias)
 
 
