@@ -5,11 +5,12 @@ import numpy as np
 import random
 
 from processar_rotulos import retirar_rotulos 
-from utils import gerar_matriz_distancias, checar_matrix_adjacencias
+from utils import gerar_matriz_distancias
 from algoritmos_adjacencias import gerar_matriz_adjacencias 
 from algoritmos_peso import gerar_matriz_pesos
 from algoritmos_classificar import propagar
 from processar_rotulos import acuracia
+from MST_ext import MST_ext
 
 random.seed(200)
 
@@ -52,16 +53,19 @@ matriz_distancias = gerar_matriz_distancias(dados, dados, medida_distancia)
 
 
 print('--------------Adjacencia-------------------')
-matriz_adjacencias = gerar_matriz_adjacencias(matriz_distancias,2,'mutKNN')
-print(matriz_adjacencias)
+mpts = 2 
+matriz_MST = MST_ext(matriz_distancias, mpts)
+print(matriz_MST)
+
+
 
 print('------------------Pesos----------------------------------')
 sigma = 0.2
 k = 2
-matriz_pesos = gerar_matriz_pesos(dados,matriz_adjacencias,matriz_distancias,sigma,k,"RBF")
+matriz_pesos = gerar_matriz_pesos(dados,matriz_MST,matriz_MST,sigma,k,"RBF")
 print(matriz_pesos)
 
-checar_matrix_adjacencias(matriz_pesos)
+
 
 print('----------Propagação------------------------------')
 omega =  np.random.rand(len(classes),1)

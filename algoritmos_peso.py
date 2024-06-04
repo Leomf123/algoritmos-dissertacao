@@ -13,7 +13,7 @@ def RBF(matriz_adjacencia,matriz_distancia,sigma):
 
   for i in range(matriz_adjacencia.shape[0]):
     for j in range(matriz_adjacencia.shape[1]):
-      if matriz_adjacencia[i][j] >= 1:
+      if matriz_adjacencia[i][j] != 0:
         matriz_pesos[i][j] = np.exp(-1*np.power(2,matriz_distancia[i][j])/2*np.power(2,sigma))
 
   return matriz_pesos
@@ -31,7 +31,7 @@ def HM(matriz_adjacencia,matriz_distancia,k):
     psi_i = matriz_distancia[i][k]
     for j in range(matriz_adjacencia.shape[1]):
       psi_j = matriz_distancia[j][k]
-      if matriz_adjacencia[i][j] >= 1:
+      if matriz_adjacencia[i][j] != 0:
         matriz_pesos[i][j] = np.exp(-1*np.power(2,matriz_distancia[i][j])/np.power(2,max(psi_i,psi_j)))
 
   return matriz_pesos
@@ -47,7 +47,7 @@ def LLE(dados,matriz_adjacencia):
   for i in range(X.shape[1]):
     
     # Criar matriz Z com os vizinhos de Xi
-    posicoes = np.where(matriz_adjacencia[i,:] == 1)[0]
+    posicoes = np.where(matriz_adjacencia[i,:] != 0)[0]
     Z = np.array(X[:,posicoes])
     # Subtrair Xi de Z
     for j in range(Z.shape[1]):

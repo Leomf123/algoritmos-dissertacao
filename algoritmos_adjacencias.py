@@ -26,6 +26,14 @@ def knn(matriz_distancia,k,tipo):
      for i in range(matriz_adjacencia.shape[0]):
         for j in range(matriz_adjacencia.shape[1]):
           matriz_adjacencia[i][j] = min(matriz_adjacencia[i][j],matriz_adjacencia_transposta[i][j])
+        # checar se ta isolado
+        if np.sum(matriz_adjacencia[i]) == 0:
+          k_indices = np.argsort(matriz_distancia[i])[:2]
+          for k in k_indices:
+            if i != k:
+              matriz_adjacencia[i][k] = 1
+              matriz_adjacencia[k][i] = 1
+
 
   elif tipo == 'symKNN':
 
