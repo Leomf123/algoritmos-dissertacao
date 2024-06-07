@@ -52,14 +52,14 @@ matriz_distancias = gerar_matriz_distancias(dados, dados, medida_distancia)
 
 
 print('--------------Adjacencia-------------------')
-matriz_adjacencias = gerar_matriz_adjacencias(dados, matriz_distancias, k, 'mutKNN')
-print(matriz_adjacencias)
+matriz_adjacencias = gerar_matriz_adjacencias(dados, matriz_distancias, k, 'MST')
+#print(matriz_adjacencias)
 
 print('------------------Pesos----------------------------------')
 sigma = 0.2
 k = 2
-matriz_pesos = gerar_matriz_pesos(dados,matriz_adjacencias,matriz_distancias,sigma,k,"RBF")
-print(matriz_pesos)
+matriz_pesos = gerar_matriz_pesos(dados, matriz_adjacencias, matriz_distancias, sigma, k, "RBF")
+#print(matriz_pesos)
 
 checar_matrix_adjacencias(matriz_pesos)
 
