@@ -13,7 +13,7 @@ from processar_rotulos import acuracia
 
 random.seed(200)
 
-dados, rotulos = make_blobs(n_samples=100, cluster_std = 1 ,centers=3, n_features=2, random_state=0)
+dados, rotulos = make_blobs(n_samples=10, cluster_std = 1 ,centers=3, n_features=2, random_state=0)
 
 # Pré-processamento do rotulos para classificação semissupervisionada
 # Primeiro: como o 0 nos rotulos vão representar que não tem rótulo tenho
@@ -52,7 +52,7 @@ matriz_distancias = gerar_matriz_distancias(dados, dados, medida_distancia)
 
 
 print('--------------Adjacencia-------------------')
-matriz_adjacencias = gerar_matriz_adjacencias(matriz_distancias,2,'mutKNN')
+matriz_adjacencias = gerar_matriz_adjacencias(dados, matriz_distancias, k, 'mutKNN')
 print(matriz_adjacencias)
 
 print('------------------Pesos----------------------------------')
