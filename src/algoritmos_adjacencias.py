@@ -45,7 +45,7 @@ def MST(matriz_distancias, mpts):
     core_distance = np.zeros(matriz_distancias.shape[0])
     for i in range(matriz_distancias.shape[0]):
         # Descobre os k indices os quais i vai ter aresta pra eles - incluo ele mesmo
-        #vizinhos = np.sort(matriz_distancias[i])[:mpts]
+        # vizinhos = np.sort(matriz_distancias[i])[:mpts]
         vizinhos = np.partition(matriz_distancias[i], mpts)[:mpts]
         core_distance[i] = np.max(vizinhos)
 
@@ -62,7 +62,7 @@ def MST(matriz_distancias, mpts):
 
     return MST
 
-def gerar_matriz_adjacencias(dados, matriz_distancias, k = 4, algoritmo = 'multKNN'):
+def gerar_matriz_adjacencias(dados, matriz_distancias, k = 4, algoritmo = 'mutKNN'):
   
   if algoritmo in ['mutKNN', 'symKNN', 'symFKNN']:
     return knn(dados, matriz_distancias, k, algoritmo)

@@ -62,14 +62,12 @@ def acuracia(rotulos_originais, rotulos_propagados,rotulos_semissupervisionado):
 # entrada: vetor de rótulos
 # saída: matriz de rótulos one-hot
 def one_hot(rotulos):
-  
-  rotulos_reshape = rotulos.reshape(1,-1)[0]
 
-  matriz_one_hot = np.zeros((len(rotulos_reshape),np.max(rotulos_reshape)))
+  matriz_one_hot = np.zeros((len(rotulos),np.max(rotulos)))
 
-  for i in range(len(rotulos_reshape)):
-    if rotulos_reshape[i] !=0:
-      matriz_one_hot[i][rotulos_reshape[i]-1] = 1
+  for i in range(len(rotulos)):
+    if rotulos[i] !=0:
+      matriz_one_hot[i][rotulos[i]-1] = 1
 
   return matriz_one_hot
 
