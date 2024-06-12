@@ -1,10 +1,13 @@
 import numpy as np
 import random
+from sklearn.metrics import balanced_accuracy_score, f1_score
 
 # função para retirar rotulos dado uma porcentagem
 # entrada: vetor numpy de rótulos e uma porcetagem pra manter
 # saída: vertor numpy de rotulos com alguns não rotulados
-def retirar_rotulos(rotulos, porcentagem_manter,classes):
+def retirar_rotulos(rotulos, porcentagem_manter, classes, seed = 100):
+ 
+ random.seed(seed)
  
  quantidade_retirar = int(len(rotulos)*(1 - porcentagem_manter))
  if len(rotulos)-quantidade_retirar < len(classes):
@@ -91,4 +94,22 @@ def reverso_one_hot(matriz_one_hot):
       rotulos[i] =0
 
   return rotulos
+
+def medidas_qualidade(posicoes_rotulos, ordemObjetos, rotulos, rotulos_propagados):
+  '''
+  rotulos: rotulos originais
+  rotulos_propagados: rotulos propagados
+  '''
+  posicao_sem_rotulos = ordemObjetos[len(posicoes_rotulos):]
+  y_true = rotulos[posicao_sem_rotulos]
+  y_pred = rotulos_propagados[posicao_sem_rotulos]
+
+  nRotulos = np.count_nonzero(y_pred == 0)
+
+  acuracia = balanced_accuracy_score(y_true, y_pred)
+  f_measure = f1_score(y_true, y_pred, average='macro')
+
+  return acuracia, f_measure, nRotulos
+
+  
 

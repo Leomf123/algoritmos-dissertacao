@@ -11,11 +11,11 @@ from algoritmos_peso import gerar_matriz_pesos
 from algoritmos_classificar import propagar
 from processar_rotulos import acuracia
 from utils import ordem_rotulos_primeiro, divisao_L
-from processar_rotulos import one_hot
+from processar_rotulos import one_hot, medidas_qualidade
 
-random.seed(100)
+random.seed(10)
 
-dados, rotulos = make_blobs(n_samples=100, cluster_std = 1 ,centers=3, n_features=2, random_state=0)
+dados, rotulos = make_blobs(n_samples=10, cluster_std = 1 ,centers=3, n_features=2, random_state=0)
 
 # Pré-processamento do rotulos para classificação semissupervisionada
 # Primeiro: como o 0 nos rotulos vão representar que não tem rótulo tenho
@@ -31,7 +31,7 @@ for k in range(len(rotulos)):
 
 # Como eu preciso de rotulos faltando, que serão classificados
 # retiro a quantidade dado uma porcentagem ( de 0 a 1 )
-porcentagem_manter = 0.08
+porcentagem_manter = 0.4
 rotulos_semissupervisionado = retirar_rotulos(rotulos, porcentagem_manter, classes)
 
 print("------rotulos faltando---------")
@@ -77,7 +77,7 @@ parametro_regularizacao = 0.99
 lambda_k = 0.1
 lambda_u = 0.1
 
-rotulos_propagados = propagar(dados, L, posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada, yl, rotulos_semissupervisionado, matriz_rotulos, classes, medida_distancia, k, lambda_k, lambda_u, omega, parametro_regularizacao, algoritmo = "LapSVM")
+rotulos_propagados = propagar(dados, L, posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada, yl, rotulos_semissupervisionado, matriz_rotulos, classes, medida_distancia, k, lambda_k, lambda_u, omega, parametro_regularizacao, algoritmo = "GRF")
 print('Rotulos originais:')
 print(rotulos)
 print('Rotulos faltando:')
@@ -87,6 +87,10 @@ print(rotulos_propagados)
 
 print('------------acuracia--------------')
 print(acuracia(rotulos, rotulos_propagados, rotulos_semissupervisionado))
+acuraci, f_measure = medidas_qualidade(posicoes_rotulos, ordemObjetos, rotulos, rotulos_propagados)
+
+print(acuraci)
+print(f_measure)
 
 
 plt.scatter(dados[:, 0], dados[:, 1], marker="o", c=rotulos, s=25)
