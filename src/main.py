@@ -69,11 +69,10 @@ for nome_dataset in datasets:
     dados = df.to_numpy()
     # Separando rótulos dos dados
     ultima_coluna = dados.shape[1] - 1
-    classes = dados[:,dados.shape[1] - 1].unique()
-    rotulos = np.array(dados[:,dados.shape[1] - 1], dtype='int64')
-    dados = np.array(dados[:,:dados.shape[1] - 1])
-
+    rotulos = np.array(dados[:,ultima_coluna], dtype='int64')
+    dados = np.array(dados[:,:ultima_coluna])
     # Pegar classes
+    classes = np.unique(rotulos)
 
     # Precisa normalizar os dados?
 
@@ -142,12 +141,3 @@ for nome_dataset in datasets:
 
                             print(test_ID)
 
-
-
-
-
-
-
-
-
-    
