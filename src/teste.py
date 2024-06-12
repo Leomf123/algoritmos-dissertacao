@@ -31,7 +31,7 @@ for k in range(len(rotulos)):
 
 # Como eu preciso de rotulos faltando, que serão classificados
 # retiro a quantidade dado uma porcentagem ( de 0 a 1 )
-porcentagem_manter = 0.1
+porcentagem_manter = 0.08
 rotulos_semissupervisionado = retirar_rotulos(rotulos, porcentagem_manter, classes)
 
 print("------rotulos faltando---------")
@@ -77,7 +77,7 @@ parametro_regularizacao = 0.99
 lambda_k = 0.1
 lambda_u = 0.1
 
-rotulos_propagados = propagar(dados, L, posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada, yl, rotulos_semissupervisionado, matriz_rotulos, classes, medida_distancia, k, lambda_k, lambda_u, omega, parametro_regularizacao, algoritmo = "LapRLS")
+rotulos_propagados = propagar(dados, L, posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada, yl, rotulos_semissupervisionado, matriz_rotulos, classes, medida_distancia, k, lambda_k, lambda_u, omega, parametro_regularizacao, algoritmo = "LapSVM")
 print('Rotulos originais:')
 print(rotulos)
 print('Rotulos faltando:')

@@ -1,6 +1,7 @@
 from processar_rotulos import one_hot
 import numpy as np
 from LapRLS import propagar_LapRLS
+from LapSVM import propagar_LapSVM
 
 # GRF para calcular a matriz de rótulos propagados
 # entrada: matriz de pesos, rótulos
@@ -99,6 +100,8 @@ def propagar(dados, L, posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRo
    elif algoritmo == "LapRLS":
       return propagar_LapRLS(dados, L, posicoes_rotulos, ordemObjetos, rotulos, classes, medida_distancia, k, lambda_k, lambda_u)
    
+   elif algoritmo == "LapSVM":
+      return propagar_LapSVM(dados, L, posicoes_rotulos, ordemObjetos, rotulos, classes, medida_distancia, k, lambda_k, lambda_u)
 
 
 
