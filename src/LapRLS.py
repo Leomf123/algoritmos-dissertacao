@@ -7,11 +7,12 @@
 import numpy as np
 import math
 from numpy import linalg
+from scipy.sparse import csr_matrix
 
 import sklearn
 from sklearn import datasets
 from scipy.spatial.distance import cdist
-
+from sklearn.neighbors import kneighbors_graph
 import scipy.optimize as sco
 
 from itertools import cycle, islice
@@ -21,7 +22,7 @@ from itertools import cycle, islice
 
 class LapRLS(object):
 
-    def __init__(self, distancy, sigma, lambda_k, lambda_u, adjacency,
+    def __init__(self, L, distancy, k, lambda_k, lambda_u,
                  learning_rate=None, n_iterations=None, solver='closed-form'):
         """
         Laplacian Regularized Least Square algorithm
@@ -38,9 +39,9 @@ class LapRLS(object):
         solver : string ('closed-form' or 'gradient-descent' or 'L-BFGS-B')
             The method to use when solving optimization problem
         """
-        self.adjacency = adjacency
+        self.L = L
         self.distancy = distancy
-        self.sigma = sigma
+        self.k = k
         self.lambda_k = lambda_k
         self.lambda_u = lambda_u
         self.learning_rate = learning_rate
@@ -61,6 +62,7 @@ class LapRLS(object):
         Y : ndarray shape (n_labeled_samples,)
             Labels
         """
+        print("inicializando LapRLS fit", end="... ")
         # Storing parameters
         l = X.shape[0]
         u = X_no_label.shape[0]
@@ -73,22 +75,11 @@ class LapRLS(object):
                 
         # Memory optimization
         del X_no_label
-        
-        # Building adjacency matrix from the knn graph
-        print('Computing adjacent matrix', end='...')
-        W = self.adjacency
-        print('done')
-
-        # Computing Graph Laplacian
-        print('Computing laplacian graph', end='...')
-        L = np.diag(W.sum(axis=0)) - W
-        print('done')
 
         # Computing K with k(i,j) = kernel(i, j)
-        print('Computing kernel matrix', end='...')
+        #print('Computing kernel matrix', end='...')
         K = self.kernel(self.X, self.X)
-        print(K.shape)
-        print('done')
+        #print('done')
 
         # Creating matrix J (diag with l x 1 and u x 0)
         J = np.diag(np.concatenate([np.ones(l), np.zeros(u)]))
@@ -96,19 +87,17 @@ class LapRLS(object):
         if self.solver == 'closed-form':
             
             # Computing final matrix
-            print('Computing final matrix', end='...')
-            final = (J.dot(K) + self.lambda_k * l * np.identity(l + u) + ((self.lambda_u * l) / (l + u) ** 2) * L.dot(K))
-            print(final)
-            print('done')
+            #print('Computing final matrix', end='...')
+            final = (J.dot(K) + self.lambda_k * l * np.identity(l + u) + ((self.lambda_u * l) / (l + u) ** 2) * self.L.dot(K))
+            #print('done')
         
             # Solving optimization problem
-            print('Computing closed-form solution', end='...')
+            #print('Computing closed-form solution', end='...')
             self.alpha = np.linalg.inv(final).dot(self.Y)
-            print(self.alpha)
-            print('done')
+            #print('done')
             
             # Memory optimization
-            del self.Y, L, J
+            del self.Y, J
             
         elif self.solver == 'gradient-descent':
             """
@@ -123,13 +112,13 @@ class LapRLS(object):
             # Computing final matrices
             grad_part1 = -(2 / l) * K.dot(self.Y)
             grad_part2 = ((2 / l) * K.dot(J) + 2 * self.lambda_k * np.identity(l + u) + \
-                        ((2 * self.lambda_u) / (l + u) ** 2) * K.dot(L)).dot(K)
+                        ((2 * self.lambda_u) / (l + u) ** 2) * K.dot(self.L)).dot(K)
 
             def RLS_grad(alpha):
                 return np.squeeze(np.array(grad_part1 + grad_part2.dot(alpha)))
                         
             # Memory optimization
-            del self.Y, L, J
+            del self.Y, J
         
             for i in range(self.n_iterations + 1):
                 
@@ -151,12 +140,12 @@ class LapRLS(object):
             # Computing final matrices
             grad_part1 = -(2 / l) * K.dot(self.Y)
             grad_part2 = ((2 / l) * K.dot(J) + 2 * self.lambda_k * np.identity(l + u) + \
-                        ((2 * self.lambda_u) / (l + u) ** 2) * K.dot(L)).dot(K)
+                        ((2 * self.lambda_u) / (l + u) ** 2) * K.dot(self.L)).dot(K)
 
             def RLS(alpha):
                 return np.squeeze(np.array((1 / l) * (self.Y - J.dot(K).dot(alpha)).T.dot((self.Y - J.dot(K).dot(alpha))) \
                         + self.lambda_k * alpha.dot(K).dot(alpha) + (self.lambda_u / n ** 2) \
-                        * alpha.dot(K).dot(L).dot(K).dot(alpha)))
+                        * alpha.dot(K).dot(self.L).dot(K).dot(alpha)))
 
             def RLS_grad(alpha):
                 return np.squeeze(np.array(grad_part1 + grad_part2.dot(alpha)))
@@ -168,7 +157,6 @@ class LapRLS(object):
         # Finding optimal decision boundary b using labeled data
         #indices_X = np.arange(l)  
         new_K = self.kernel(self.X, X)
-        print(new_K.shape)
         #new_K = K[:, indices_X]
         f = np.squeeze(np.array(self.alpha)).dot(new_K)
         
@@ -179,8 +167,8 @@ class LapRLS(object):
         bs = np.linspace(0, 1, num=101)
         res = np.array([to_minimize(b) for b in bs])
         self.b = bs[res == np.min(res)][0]
-        
-        print('Fim fit')
+
+        print("feito")
 
     def predict(self, Xtest):
         """
@@ -194,14 +182,13 @@ class LapRLS(object):
         predictions : ndarray shape (n_samples, )
             Predicted labels for Xtest
         """
+        print("inicializando LapRLS predict", end="... ")
         # Computing K_new for X
         new_K = self.kernel(self.X, Xtest)
-        print(new_K.shape)
         f = np.squeeze(np.array(self.alpha)).dot(new_K)
-        print(f)
         predictions = np.array((f > self.b) * 1)
-
-        print('Fim predict')
+        
+        print("feito")
         return predictions
     
 
@@ -225,37 +212,30 @@ class LapRLS(object):
         
         matriz_kernel = np.zeros((matriz_distancia.shape[0],matriz_distancia.shape[1]))
 
+        sigma = 0
+        for i in range(matriz_distancia.shape[0]):
+            sigma += matriz_distancia[i][self.k]/ (3 * matriz_distancia.shape[0])
+
         for i in range(matriz_distancia.shape[0]):
             for j in range(matriz_distancia.shape[1]):
-                matriz_kernel[i][j] = np.exp(-1*np.power(2,matriz_distancia[i][j])/2*np.power(2,self.sigma))
+                matriz_kernel[i][j] = np.exp(-1*np.power(2,matriz_distancia[i][j])/2*np.power(2,sigma))
 
         return matriz_kernel
 
 
 
-def propagar_LapRLS(dados, rotulos, classes, medida_distancia, sigma, lambda_k, lambda_u, matriz_pesos):
-
-
-    # pegar posições existe rotulo
-    posicoes_rotulos = []
-    for i in range(rotulos.shape[0]):
-        if rotulos[i] != 0:
-            posicoes_rotulos.append(i)
+def propagar_LapRLS(dados, L, posicoes_rotulos, ordemObjetos, rotulos, classes, medida_distancia, k, lambda_k, lambda_u):
 
     # Reordenar as posições para os rotulados vim primeiro
     posicoes_sem_rotulos = np.arange(rotulos.shape[0])
     # Retira dos indices os que são rotulados
     posicoes_sem_rotulos = np.setdiff1d(posicoes_sem_rotulos, posicoes_rotulos)
 
-    ordemObjetos = np.concatenate((posicoes_rotulos,posicoes_sem_rotulos))
-
-
     dados_rotulados = dados[posicoes_rotulos,:]
     dados_nao_rotulados = dados[posicoes_sem_rotulos,:]
     Yl = rotulos[posicoes_rotulos]
-    Yu = rotulos[posicoes_sem_rotulos]
-
-    propagacao_LapRLS = LapRLS( medida_distancia, sigma, lambda_k, lambda_u, matriz_pesos )
+    
+    propagacao_LapRLS = LapRLS( L, medida_distancia, k, lambda_k, lambda_u )
 
     resultado = np.zeros((rotulos.shape[0]),dtype=int)
 
@@ -267,11 +247,8 @@ def propagar_LapRLS(dados, rotulos, classes, medida_distancia, sigma, lambda_k, 
     for i in range(len(classes)):
         # rotulo da vez
         rotulo = classes[i]
-        print(rotulo)
         # transforma rotulo da vez 1, resto -1
         yl_one_versus_all = np.zeros((Yl.shape[0]))
-        print(Yl.shape)
-        print( yl_one_versus_all.shape)
         for j in range(Yl.shape[0]):
             if Yl[j] == rotulo:
                 yl_one_versus_all[j] = 1

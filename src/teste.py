@@ -31,7 +31,7 @@ for k in range(len(rotulos)):
 
 # Como eu preciso de rotulos faltando, que serão classificados
 # retiro a quantidade dado uma porcentagem ( de 0 a 1 )
-porcentagem_manter = 0.4
+porcentagem_manter = 0.1
 rotulos_semissupervisionado = retirar_rotulos(rotulos, porcentagem_manter, classes)
 
 print("------rotulos faltando---------")
@@ -48,11 +48,14 @@ matriz_distancias = gerar_matriz_distancias(dados, dados, medida_distancia)
 
 print('--------------Adjacencia-------------------')
 k = 2
-matriz_adjacencias = gerar_matriz_adjacencias(dados, matriz_distancias, k, 'mutKNN')
+matriz_adjacencias = gerar_matriz_adjacencias(dados, matriz_distancias, k, 'symFKNN')
 #print(matriz_adjacencias)
 
 print('------------------Pesos----------------------------------')
-sigma = 0.2
+sigma = 0
+for i in range(matriz_distancias.shape[0]):
+  sigma += matriz_distancias[i][k]/ (3 * matriz_distancias.shape[0])
+#sigma = 0.2
 matriz_pesos = gerar_matriz_pesos(dados, matriz_adjacencias, matriz_distancias, sigma, k, "RBF")
 #print(matriz_pesos)
 
@@ -61,7 +64,7 @@ checar_matrix_adjacencias(matriz_pesos)
 posicoes_rotulos, ordemObjetos = ordem_rotulos_primeiro(rotulos_semissupervisionado)
 
 # Extracao das submatrizes da matriz laplaciana
-LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada = divisao_L(matriz_pesos, posicoes_rotulos, ordemObjetos)
+L, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada = divisao_L(matriz_pesos, posicoes_rotulos, ordemObjetos)
 
 matriz_rotulos = one_hot(rotulos_semissupervisionado)
 yl = matriz_rotulos[posicoes_rotulos,:]
@@ -71,7 +74,10 @@ omega =  np.random.rand(len(classes),1)
 
 parametro_regularizacao = 0.99
 
-rotulos_propagados = propagar(posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada, yl, rotulos_semissupervisionado, matriz_rotulos, omega, parametro_regularizacao, "LGC")
+lambda_k = 0.1
+lambda_u = 0.1
+
+rotulos_propagados = propagar(dados, L, posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada, yl, rotulos_semissupervisionado, matriz_rotulos, classes, medida_distancia, k, lambda_k, lambda_u, omega, parametro_regularizacao, algoritmo = "LapRLS")
 print('Rotulos originais:')
 print(rotulos)
 print('Rotulos faltando:')

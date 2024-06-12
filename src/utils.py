@@ -108,4 +108,4 @@ def divisao_L(matriz_pesos, posicoes_rotulos, ordemObjetos):
     LNaoRotuladoRotulado = L[nRotulado:nObjetos, 0:nRotulado]
     LNaoRotulado = L[nRotulado:nObjetos, nRotulado:nObjetos]
 
-    return LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada
+    return L, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada

@@ -1,6 +1,6 @@
 from processar_rotulos import one_hot
 import numpy as np
-from utils import ordem_rotulos_primeiro, divisao_L
+from LapRLS import propagar_LapRLS
 
 # GRF para calcular a matriz de rótulos propagados
 # entrada: matriz de pesos, rótulos
@@ -85,7 +85,7 @@ def LGC(L_normalizada, matriz_rotulos, rotulos, parametro_regularizacao):
 
   return resultado
 
-def propagar(posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada, yl, rotulos, matriz_rotulos, omega = 0, parametro_regularizacao = 0.99, algoritmo = "GRF"):
+def propagar(dados, L, posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada, yl, rotulos, matriz_rotulos, classes, medida_distancia, k, lambda_k, lambda_u, omega = 0, parametro_regularizacao = 0.99, algoritmo = "GRF"):
    
    if algoritmo == "GRF":
       return GRF(posicoes_rotulos, ordemObjetos, LNaoRotuladoRotulado, LNaoRotulado, yl, rotulos)
@@ -95,7 +95,10 @@ def propagar(posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LN
    
    elif algoritmo == "LGC":
       return LGC(L_normalizada, matriz_rotulos, rotulos, parametro_regularizacao)
-
+   
+   elif algoritmo == "LapRLS":
+      return propagar_LapRLS(dados, L, posicoes_rotulos, ordemObjetos, rotulos, classes, medida_distancia, k, lambda_k, lambda_u)
+   
 
 
 
