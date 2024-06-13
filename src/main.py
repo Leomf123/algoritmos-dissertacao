@@ -47,7 +47,7 @@ datasets = [
 
 K = [2, 4, 6, 8, 10]
 
-Adjacencia = ["multKNN", "symKNN", "symFKNN", "MST"]
+Adjacencia = ["mutKNN", "symKNN", "symFKNN", "MST"]
 
 Ponderacao = ["RBF", "HM", "LLE"]
 
@@ -123,14 +123,12 @@ for nome_dataset in datasets:
                             # Propagar rotulos
                             lambda_k = 0.1
                             lambda_u = 0.1
-                            omega = 0
-                            parametro_regularizacao = 0.1
+                            omega =  np.random.rand(len(classes),1)
+                            parametro_regularizacao = 0.99
                             rotulos_propagados = propagar(dados, L, posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada, yl, rotulos_semissupervisionado, matriz_rotulos, classes, medida_distancia, k, lambda_k, lambda_u, omega, parametro_regularizacao, propagacao)
 
                             # Usar medidas de qualidade
                             acuracia, f_measure, nRotulos = medidas_qualidade(posicoes_rotulos, ordemObjetos, rotulos, rotulos_propagados)
-
-                            test_ID += 1
 
                             # Gravar tempo que levou
                             fim = time.time()
@@ -139,5 +137,7 @@ for nome_dataset in datasets:
                             # gravar resultado em uma linha usando pandas
                             gravar_resultados(test_ID, nome_dataset, k, adjacencia, ponderacao, r, e, propagacao, seeds[e], tempo, nRotulos, acuracia, f_measure)
 
-                            print(test_ID)
+                            print("test_ID:" + test_ID)
+
+                            test_ID += 1
 

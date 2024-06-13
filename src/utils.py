@@ -118,9 +118,9 @@ def gravar_resultados(test_ID, nome_dataset, k, adjacencia, ponderacao, r, e, pr
     if test_ID == 0: 
 
         # Criando um DataFrame vazio
-        df = pd.DataFrame(columns=['test_ID', 'Dataset', 'Adjacencia', 'k', 'Ponderacao', 'Propagação', 'PorcRot', 'NumExp', 'SeedExp', 'TempExp', 'NumNRot', 'Acuracia', 'F_measure' ])
+        df = pd.DataFrame(columns=['test_ID', 'Dataset', 'Adjacencia', 'k', 'Ponderacao', 'Propagacao', 'PorcRot', 'NumExp', 'SeedExp', 'TempExp', 'NumNRot', 'Acuracia', 'F_measure' ])
         # Adicionando dados
-        dados = [{'test_ID': test_ID, 'Dataset': nome_dataset, 'Adjacencia': adjacencia, 'k': k, 'Ponderacao': ponderacao, 'Propagação': propagacao, 'PorcRot': r, 'NumExp': e, 'SeedExp': seed, 'TempExp': tempo, 'NumNRot': nRotulos, 'Acuracia': acuracia, 'F_measure': f_measure}]
+        dados = [{'test_ID': test_ID, 'Dataset': nome_dataset, 'Adjacencia': adjacencia, 'k': k, 'Ponderacao': ponderacao, 'Propagacao': propagacao, 'PorcRot': r, 'NumExp': e, 'SeedExp': seed, 'TempExp': tempo, 'NumNRot': nRotulos, 'Acuracia': acuracia, 'F_measure': f_measure}]
 
         dados = pd.DataFrame(dados)
         df = pd.concat([df, dados], ignore_index=True)
@@ -133,7 +133,7 @@ def gravar_resultados(test_ID, nome_dataset, k, adjacencia, ponderacao, r, e, pr
         df = pd.read_csv('Resultados.csv')
   
         # Adicionando dados
-        dados = [{'test_ID': test_ID, 'Dataset': nome_dataset, 'Adjacencia': adjacencia, 'k': k, 'Ponderacao': ponderacao, 'Propagação': propagacao, 'PorcRot': r, 'NumExp': e, 'SeedExp': seed, 'TempExp': tempo, 'NumNRot': nRotulos, 'Acuracia': acuracia, 'F_measure': f_measure}]
+        dados = [{'test_ID': test_ID, 'Dataset': nome_dataset, 'Adjacencia': adjacencia, 'k': k, 'Ponderacao': ponderacao, 'Propagacao': propagacao, 'PorcRot': r, 'NumExp': e, 'SeedExp': seed, 'TempExp': tempo, 'NumNRot': nRotulos, 'Acuracia': acuracia, 'F_measure': f_measure}]
 
         dados = pd.DataFrame(dados)
         df = pd.concat([df, dados], ignore_index=True)
