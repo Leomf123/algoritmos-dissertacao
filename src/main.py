@@ -8,7 +8,7 @@ from algoritmos_adjacencias import gerar_matriz_adjacencias
 from algoritmos_peso import gerar_matriz_pesos
 from processar_rotulos import retirar_rotulos, medidas_qualidade
 from algoritmos_classificar import propagar
-from utils import ordem_rotulos_primeiro, divisao_L, gravar_resultados
+from utils import ordem_rotulos_primeiro, divisao_L, gravar_resultados, definir_medida_distancia
 from processar_rotulos import one_hot
 
 datasets = [
@@ -78,7 +78,8 @@ for nome_dataset in datasets:
 
     # Precisa normalizar os dados?
 
-    medida_distancia = 'euclidean'
+    # medida_distancia = 'euclidean'
+    medida_distancia = definir_medida_distancia(nome_dataset)
     matriz_distancias = gerar_matriz_distancias(dados, dados, medida_distancia)
 
     # 2 - Para cada valor de K

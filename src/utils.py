@@ -142,3 +142,52 @@ def gravar_resultados(test_ID, nome_dataset, k, adjacencia, ponderacao, r, e, pr
         df.to_csv('Resultados.csv', index=False)
 
     print("Gravação concluída")
+
+def definir_medida_distancia(nome_dado):
+
+    datasets_euclidean = [
+        "autoPrice.data",
+        "banknote-authentication.data",
+        "cardiotocography.data",
+        "chscase_geyser1.data",
+        "diggle_table.data",
+        "iris.data",
+        "mfeat-factors.data",
+        "mfeat-karhunen.data",
+        "seeds.data",
+        "segmentation-normcols.data",
+        "stock.data",
+        "transplant.data",
+        "wdbc.data",
+        "wine-187.data",
+        "yeast_Galactose.data"
+
+    ]    
+    datasets_tanimoto = [
+        "ace_ECFP_4.data",
+        "ace_ECFP_6.data",
+        "articles_1442_5.data",
+        "articles_1442_80.data",
+        "cox2_ECFP_6.data",
+        "dhfr_ECFP_4.data",
+        "dhfr_ECFP_6.data",
+        "fontaine_ECFP_4.data",
+        "fontaine_ECFP_6.data",
+        "m1_ECFP_4.data",
+        "m1_ECFP_6.data",
+    ]
+
+    datasets_cosine = [
+        "analcatdata_authorship-458.data",
+        "armstrong2002v1.data",
+        "chowdary2006.data",
+        "gordon2002.data",
+        "semeion.data",
+    ]
+
+    if nome_dado in datasets_tanimoto:
+        return 'rogerstanimoto'
+    elif nome_dado in datasets_cosine:
+        return  'cosine'
+    else:
+        return 'euclidean'
