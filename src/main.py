@@ -59,9 +59,11 @@ Propagacao = ["GRF", "RMGT", "LGC", "LapRLS", "LapSVM"]
 
 test_ID = 0
 
+inicio_geral = time.time()
 # 1 - Para cada dataset
 for nome_dataset in datasets:
     inicio = time.time()
+    tempo = 0
 
     # Lendo dados
     df = pd.read_csv('data/' + nome_dataset, header=None)
@@ -132,12 +134,14 @@ for nome_dataset in datasets:
 
                             # Gravar tempo que levou
                             fim = time.time()
-                            tempo = fim - inicio
+                            tempo = fim - ( inicio + tempo )
 
                             # gravar resultado em uma linha usando pandas
                             gravar_resultados(test_ID, nome_dataset, k, adjacencia, ponderacao, r, e, propagacao, seeds[e], tempo, nRotulos, acuracia, f_measure)
 
-                            print("test_ID:" + test_ID)
+                            print("test_ID: ", test_ID)
 
                             test_ID += 1
-
+fim_geral = time.time()
+tempo_geral = fim_geral - inicio_geral
+print("Tempo geral execução (min): ", tempo_geral/60)
