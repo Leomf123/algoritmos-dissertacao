@@ -8,7 +8,7 @@ from algoritmos_adjacencias import gerar_matriz_adjacencias
 from algoritmos_peso import gerar_matriz_pesos
 from processar_rotulos import retirar_rotulos, medidas_qualidade
 from algoritmos_classificar import propagar
-from utils import ordem_rotulos_primeiro, divisao_L, gravar_resultados, definir_medida_distancia
+from utils import ordem_rotulos_primeiro, divisao_L, gravar_resultados, definir_medida_distancia, normalizar_dados
 from processar_rotulos import one_hot
 
 datasets = [
@@ -67,6 +67,7 @@ for nome_dataset in datasets:
 
     # Lendo dados
     df = pd.read_csv('data/' + nome_dataset, header=None)
+    
     # Conversão para numpy
     dados = df.to_numpy()
     # Separando rótulos dos dados
@@ -76,7 +77,8 @@ for nome_dataset in datasets:
     # Pegar classes
     classes = np.unique(rotulos)
 
-    # Precisa normalizar os dados?
+    # Normalizar dados
+    dados = normalizar_dados(nome_dataset, dados)
 
     # medida_distancia = 'euclidean'
     medida_distancia = definir_medida_distancia(nome_dataset)

@@ -166,8 +166,6 @@ def definir_medida_distancia(nome_dado):
     datasets_tanimoto = [
         "ace_ECFP_4.data",
         "ace_ECFP_6.data",
-        "articles_1442_5.data",
-        "articles_1442_80.data",
         "cox2_ECFP_6.data",
         "dhfr_ECFP_4.data",
         "dhfr_ECFP_6.data",
@@ -178,6 +176,8 @@ def definir_medida_distancia(nome_dado):
     ]
 
     datasets_cosine = [
+        "articles_1442_5.data",
+        "articles_1442_80.data",
         "analcatdata_authorship-458.data",
         "armstrong2002v1.data",
         "chowdary2006.data",
@@ -191,3 +191,51 @@ def definir_medida_distancia(nome_dado):
         return  'cosine'
     else:
         return 'euclidean'
+
+def normalizar_dados(nome_dado, dados):
+
+    datasets_Normalizar = [
+        "autoPrice.data",
+        "banknote-authentication.data",
+        "stock.data",
+        "transplant.data",
+    ]    
+
+    datasets_nNormalizar = [
+        "cardiotocography.data",
+        "chscase_geyser1.data",
+        "diggle_table.data",
+        "iris.data",
+        "mfeat-factors.data",
+        "mfeat-karhunen.data",
+        "seeds.data",
+        "segmentation-normcols.data",
+        "wdbc.data",
+        "wine-187.data",
+        "yeast_Galactose.data"
+        "ace_ECFP_4.data",
+        "ace_ECFP_6.data",
+        "cox2_ECFP_6.data",
+        "dhfr_ECFP_4.data",
+        "dhfr_ECFP_6.data",
+        "fontaine_ECFP_4.data",
+        "fontaine_ECFP_6.data",
+        "m1_ECFP_4.data",
+        "m1_ECFP_6.data",
+        "articles_1442_5.data",
+        "articles_1442_80.data",
+        "analcatdata_authorship-458.data",
+        "armstrong2002v1.data",
+        "chowdary2006.data",
+        "gordon2002.data",
+        "semeion.data",
+    ]
+
+    dados_normalizados = np.array(dados)
+
+    if nome_dado in datasets_Normalizar:
+        mean = np.mean(dados, axis=0)
+        std = np.std(dados, axis=0)
+        dados_normalizados = (dados - mean) / std
+    
+    return dados_normalizados
