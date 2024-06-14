@@ -45,7 +45,7 @@ datasets = [
     "yeast_Galactose.data"
 ]
 
-K = [2, 4, 6, 8, 10]
+K = [2, 4, 6, 8, 10, 12, 14, 16]
 
 Adjacencia = ["mutKNN", "symKNN", "symFKNN", "MST"]
 
@@ -64,10 +64,10 @@ inicio_geral = time.time()
 for nome_dataset in datasets:
     inicio = time.time()
     tempo = 0
-
+    print("Datset: ", nome_dataset)
     # Lendo dados
     df = pd.read_csv('data/' + nome_dataset, header=None)
-    
+
     # Conversão para numpy
     dados = df.to_numpy()
     # Separando rótulos dos dados
@@ -89,15 +89,14 @@ for nome_dataset in datasets:
 
         # 3 - Para cada algoritmo de adjacencia
         for adjacencia in Adjacencia:
-
+            print(adjacencia)
             # Gerar matriz de adjacencia
             matriz_adjacencias = gerar_matriz_adjacencias(dados, matriz_distancias, k, adjacencia)
-
+            
             # 4 - Para cada ponderação
             for ponderacao in Ponderacao:
-
+                print(ponderacao)
                 # Gerar matriz pesos
-                # to do: otimizar algoritimos de peso
                 sigma = 0.2
                 matriz_pesos = gerar_matriz_pesos(dados, matriz_adjacencias , matriz_distancias, sigma, k, ponderacao)
                 
@@ -111,7 +110,6 @@ for nome_dataset in datasets:
                     for e in range(Quantidade_experimentos):
 
                         # Retirar quantidade de rotulos
-                        # to do: otimizar retirar_rotulos
                         rotulos_semissupervisionado = retirar_rotulos(rotulos, r, classes, seeds[e])
 
                         posicoes_rotulos, ordemObjetos = ordem_rotulos_primeiro(rotulos_semissupervisionado)
@@ -124,7 +122,7 @@ for nome_dataset in datasets:
 
                         #7 - Para cada algoritmo de classificação semi
                         for propagacao in Propagacao:
-
+                            print(propagacao)
                             # Propagar rotulos
                             lambda_k = 0.1
                             lambda_u = 0.1
