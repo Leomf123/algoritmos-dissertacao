@@ -8,7 +8,8 @@ from algoritmos_adjacencias import gerar_matriz_adjacencias
 from algoritmos_peso import gerar_matriz_pesos
 from processar_rotulos import retirar_rotulos, medidas_qualidade
 from algoritmos_classificar import propagar
-from utils import ordem_rotulos_primeiro, divisao_L, gravar_resultados, definir_medida_distancia, normalizar_dados
+from utils import ordem_rotulos_primeiro, divisao_L, gravar_resultados, definir_medida_distancia
+from utils import normalizar_dados, retornar_sigma, retornar_omega
 from processar_rotulos import one_hot
 
 datasets = [
@@ -83,9 +84,14 @@ for nome_dataset in datasets:
     # medida_distancia = 'euclidean'
     medida_distancia = definir_medida_distancia(nome_dataset)
     matriz_distancias = gerar_matriz_distancias(dados, dados, medida_distancia)
+   
+    # Usado no RMGT
+    omega = retornar_omega(classes)
 
     # 2 - Para cada valor de K
     for k in K:
+        # Usado no RBF
+        sigma = retornar_sigma(matriz_distancias, k)
 
         # 3 - Para cada algoritmo de adjacencia
         for adjacencia in Adjacencia:
@@ -97,7 +103,6 @@ for nome_dataset in datasets:
             for ponderacao in Ponderacao:
                 print(ponderacao)
                 # Gerar matriz pesos
-                sigma = 0.2
                 matriz_pesos = gerar_matriz_pesos(dados, matriz_adjacencias , matriz_distancias, sigma, k, ponderacao)
                 
                 # 5 - Para cada quantidade de rotulos
@@ -126,7 +131,7 @@ for nome_dataset in datasets:
                             # Propagar rotulos
                             lambda_k = 0.1
                             lambda_u = 0.1
-                            omega =  np.random.rand(len(classes),1)
+                            # Usado no LGC
                             parametro_regularizacao = 0.99
                             rotulos_propagados = propagar(dados, L, posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada, yl, rotulos_semissupervisionado, matriz_rotulos, classes, medida_distancia, k, lambda_k, lambda_u, omega, parametro_regularizacao, propagacao)
 

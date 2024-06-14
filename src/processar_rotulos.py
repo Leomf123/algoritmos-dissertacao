@@ -107,7 +107,7 @@ def medidas_qualidade(posicoes_rotulos, ordemObjetos, rotulos, rotulos_propagado
   nRotulos = np.count_nonzero(y_pred == 0)
 
   acuracia = balanced_accuracy_score(y_true, y_pred)
-  f_measure = f1_score(y_true, y_pred, average='macro')
+  f_measure = f1_score(y_true, y_pred, average='weighted')
 
   return acuracia, f_measure, nRotulos
 

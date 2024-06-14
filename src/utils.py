@@ -209,3 +209,20 @@ def normalizar_dados(nome_dado, dados):
         dados_normalizados = (dados - mean) / std
     
     return dados_normalizados
+
+def retornar_sigma(matriz_distancias, k):
+    
+    n = matriz_distancias.shape[0]
+
+    sigma = 0
+    for i in range(n):
+        ik = np.partition(matriz_distancias[i], k)[:k]
+        sigma += ik[-1]/(3*n)
+    
+    return sigma
+
+def retornar_omega(classes):
+
+    omega = np.ones((len(classes), 1))/len(classes)
+
+    return omega
