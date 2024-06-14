@@ -141,7 +141,7 @@ def gravar_resultados(test_ID, nome_dataset, k, adjacencia, ponderacao, r, e, pr
         # salvo arquivo csv mesmo lugar do outro
         df.to_csv('Resultados.csv', index=False)
 
-    print("Gravação concluída")
+    #print("Gravação concluída")
 
 def definir_medida_distancia(nome_dado):
 
@@ -152,8 +152,6 @@ def definir_medida_distancia(nome_dado):
         "chscase_geyser1.data",
         "diggle_table.data",
         "iris.data",
-        "mfeat-factors.data",
-        "mfeat-karhunen.data",
         "seeds.data",
         "segmentation-normcols.data",
         "stock.data",
@@ -161,7 +159,6 @@ def definir_medida_distancia(nome_dado):
         "wdbc.data",
         "wine-187.data",
         "yeast_Galactose.data"
-
     ]    
     datasets_tanimoto = [
         "ace_ECFP_4.data",
@@ -183,6 +180,8 @@ def definir_medida_distancia(nome_dado):
         "chowdary2006.data",
         "gordon2002.data",
         "semeion.data",
+        "mfeat-factors.data",
+        "mfeat-karhunen.data",
     ]
 
     if nome_dado in datasets_tanimoto:
@@ -199,37 +198,8 @@ def normalizar_dados(nome_dado, dados):
         "banknote-authentication.data",
         "stock.data",
         "transplant.data",
-    ]    
-
-    datasets_nNormalizar = [
-        "cardiotocography.data",
-        "chscase_geyser1.data",
         "diggle_table.data",
-        "iris.data",
-        "mfeat-factors.data",
-        "mfeat-karhunen.data",
-        "seeds.data",
-        "segmentation-normcols.data",
-        "wdbc.data",
-        "wine-187.data",
-        "yeast_Galactose.data"
-        "ace_ECFP_4.data",
-        "ace_ECFP_6.data",
-        "cox2_ECFP_6.data",
-        "dhfr_ECFP_4.data",
-        "dhfr_ECFP_6.data",
-        "fontaine_ECFP_4.data",
-        "fontaine_ECFP_6.data",
-        "m1_ECFP_4.data",
-        "m1_ECFP_6.data",
-        "articles_1442_5.data",
-        "articles_1442_80.data",
-        "analcatdata_authorship-458.data",
-        "armstrong2002v1.data",
-        "chowdary2006.data",
-        "gordon2002.data",
-        "semeion.data",
-    ]
+    ]    
 
     dados_normalizados = np.array(dados)
 
