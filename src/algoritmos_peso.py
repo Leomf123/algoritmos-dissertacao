@@ -7,7 +7,7 @@ import numpy as np
 # saída: matriz de pesos
 def RBF(matriz_adjacencia, matriz_distancia, sigma):
 
-  print("inicializando RBF", end="... ")
+  #print("inicializando RBF", end="... ")
 
   matriz_pesos = np.zeros((matriz_adjacencia.shape[0],matriz_adjacencia.shape[1]))
 
@@ -16,7 +16,7 @@ def RBF(matriz_adjacencia, matriz_distancia, sigma):
       if matriz_adjacencia[i][j] != 0:
         matriz_pesos[i][j] = np.exp(-1*np.power(2,matriz_distancia[i][j])/2*np.power(2,sigma))
   
-  print("feito")
+  #print("feito")
 
   return matriz_pesos
 
@@ -25,7 +25,7 @@ def RBF(matriz_adjacencia, matriz_distancia, sigma):
 # saída: matriz de pesos
 def HM(matriz_adjacencia,matriz_distancia,k):
 
-  print("Inicializando HM", end="... ")
+  #print("Inicializando HM", end="... ")
 
   matriz_pesos = np.zeros((matriz_adjacencia.shape[0],matriz_adjacencia.shape[1]))
 
@@ -36,13 +36,13 @@ def HM(matriz_adjacencia,matriz_distancia,k):
       if matriz_adjacencia[i][j] != 0:
         matriz_pesos[i][j] = np.exp(-1*np.power(2,matriz_distancia[i][j])/np.power(2,max(psi_i,psi_j)))
   
-  print("feito")
+  #print("feito")
 
   return matriz_pesos
 
 def LLE(dados,matriz_adjacencia):
 
-  print("Inicializando LLE", end="... " )
+  #print("Inicializando LLE", end="... " )
 
   matriz_pesos = np.zeros((matriz_adjacencia.shape[0],matriz_adjacencia.shape[1]))
 
@@ -59,6 +59,9 @@ def LLE(dados,matriz_adjacencia):
     
     # Variancia Local
     C = Z.T @ Z
+    
+    if C.dtype == 'int' or C.dtype == 'int64':
+      C = C.astype(np.float64)
 
     C += np.eye(C.shape[0]) + 0.00001
     
@@ -71,7 +74,7 @@ def LLE(dados,matriz_adjacencia):
 
   matriz_pesos = 1/2*(matriz_pesos + matriz_pesos.T)
 
-  print("feito")
+  #print("feito")
 
   return matriz_pesos
 

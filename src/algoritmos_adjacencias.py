@@ -7,7 +7,7 @@ from utils import primMST
 # saida: matriz de adjacencia
 def knn(dados, matriz_distancia, k, tipo):
 
-  print("inicializando " + tipo, end="... ")
+  #print("inicializando " + tipo, end="... ")
 
   matriz_adjacencia =  kneighbors_graph(dados, k, mode='connectivity').toarray()
 
@@ -33,13 +33,13 @@ def knn(dados, matriz_distancia, k, tipo):
   elif tipo == 'symFKNN':
     matriz_adjacencia = matriz_adjacencia + matriz_adjacencia_transposta
   
-  print("feito")
+  #print("feito")
 
   return matriz_adjacencia
 
 def MST(matriz_distancias, mpts):
     
-    print("inicializando MST", end="... ")
+    #print("inicializando MST", end="... ")
 
     # 1- Calcular a core distance
     core_distance = np.zeros(matriz_distancias.shape[0])
@@ -58,7 +58,7 @@ def MST(matriz_distancias, mpts):
     # 3- Gerar MST: Aplicar Prim
     MST = np.array(primMST(grafoMRD))
 
-    print("feito")
+    #print("feito")
 
     return MST
 

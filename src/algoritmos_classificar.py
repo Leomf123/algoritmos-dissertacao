@@ -8,7 +8,7 @@ from LapSVM import propagar_LapSVM
 # saída: matriz de rótulos propagados
 def GRF(posicoes_rotulos, ordemObjetos, LNaoRotuladoRotulado, LNaoRotulado, yl, rotulos):
 
-  print("inicializando GRF", end="... ")
+  #print("inicializando GRF", end="... ")
 
   resultado = np.zeros((rotulos.shape[0]),dtype=int)
   # Os rotulos originais continuam da mesma forma
@@ -22,7 +22,7 @@ def GRF(posicoes_rotulos, ordemObjetos, LNaoRotuladoRotulado, LNaoRotulado, yl, 
     posicao = np.argmax(f[i,:])
     resultado[ordemNaoRotulado[i]]= posicao + 1
   
-  print("feito")
+  #print("feito")
 
   return resultado
 
@@ -32,7 +32,7 @@ def GRF(posicoes_rotulos, ordemObjetos, LNaoRotuladoRotulado, LNaoRotulado, yl, 
 # saída: matriz de rótulos propagados
 def RMGT(posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, yl, rotulos, omega):
 
-  print("inicializando RMGT", end="... ")
+  #print("inicializando RMGT", end="... ")
 
   resultado = np.zeros((rotulos.shape[0]),dtype=int)
 
@@ -59,7 +59,7 @@ def RMGT(posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRo
     posicao = np.argmax(f[i,:])
     resultado[ordemNaoRotulado[i]]= posicao + 1
   
-  print("feito")
+  #print("feito")
 
   return resultado
 
@@ -69,7 +69,7 @@ def RMGT(posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRo
 # saída: vetor de rótulos propagados
 def LGC(L_normalizada, matriz_rotulos, rotulos, parametro_regularizacao):
 
-  print("inicializando LGC", end="... ")
+  #print("inicializando LGC", end="... ")
 
   # Calculo da laplaciana normalizada
   matriz_identidade = np.eye(matriz_rotulos.shape[0])
@@ -82,7 +82,7 @@ def LGC(L_normalizada, matriz_rotulos, rotulos, parametro_regularizacao):
     posicao = np.argmax(f[i,:])
     resultado[i]= posicao + 1
   
-  print("feito")
+  #print("feito")
 
   return resultado
 
