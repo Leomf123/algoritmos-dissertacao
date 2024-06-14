@@ -9,7 +9,7 @@ from algoritmos_peso import gerar_matriz_pesos
 from processar_rotulos import retirar_rotulos, medidas_qualidade
 from algoritmos_classificar import propagar
 from utils import ordem_rotulos_primeiro, divisao_L, gravar_resultados, definir_medida_distancia
-from utils import normalizar_dados, retornar_sigma, retornar_omega
+from utils import normalizar_dados, retornar_sigma, retornar_omega, checar_matrix_adjacencias
 from processar_rotulos import one_hot
 
 datasets = [
@@ -99,6 +99,8 @@ for nome_dataset in datasets:
             # Gerar matriz de adjacencia
             matriz_adjacencias = gerar_matriz_adjacencias(dados, matriz_distancias, k, adjacencia)
             
+            simetrica, conectado = checar_matrix_adjacencias(matriz_adjacencias)
+
             # 4 - Para cada ponderação
             for ponderacao in Ponderacao:
                 print(ponderacao)
@@ -143,7 +145,7 @@ for nome_dataset in datasets:
                             tempo = fim - ( inicio + tempo )
 
                             # gravar resultado em uma linha usando pandas
-                            gravar_resultados(test_ID, nome_dataset, k, adjacencia, ponderacao, r, e, propagacao, seeds[e], tempo, nRotulos, acuracia, f_measure)
+                            gravar_resultados(test_ID, nome_dataset, k, adjacencia, simetrica, conectado, ponderacao, r, e, propagacao, seeds[e], tempo, nRotulos, acuracia, f_measure)
 
                             print("test_ID: ", test_ID)
 

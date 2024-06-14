@@ -21,19 +21,8 @@ def checar_matrix_adjacencias(matriz_adjacencias):
         for j in range(matriz_adjacencias.shape[1]):
             if matriz_adjacencias[i][j] != matriz_adjacencias[j][i]:
                 simetrica = False
-                print(matriz_adjacencias[i][j])
-                print(matriz_adjacencias[j][i])
-
-    if simetrica:
-        print('simetrica')
-    else:
-        print('não simetrica')
     
-    if conectado:
-        print('conectado')
-    else:
-        print('isolado')
-
+    return simetrica, conectado
 
 def primMST(grafo):
     V = len(grafo)  
@@ -113,14 +102,14 @@ def divisao_L(matriz_pesos, posicoes_rotulos, ordemObjetos):
 
 
 
-def gravar_resultados(test_ID, nome_dataset, k, adjacencia, ponderacao, r, e, propagacao, seed, tempo, nRotulos, acuracia, f_measure):
+def gravar_resultados(test_ID, nome_dataset, k, adjacencia, simetrica, conectado, ponderacao, r, e, propagacao, seed, tempo, nRotulos, acuracia, f_measure):
     
     if test_ID == 0: 
 
         # Criando um DataFrame vazio
         df = pd.DataFrame(columns=['test_ID', 'Dataset', 'Adjacencia', 'k', 'Ponderacao', 'Propagacao', 'PorcRot', 'NumExp', 'SeedExp', 'TempExp', 'NumNRot', 'Acuracia', 'F_measure' ])
         # Adicionando dados
-        dados = [{'test_ID': test_ID, 'Dataset': nome_dataset, 'Adjacencia': adjacencia, 'k': k, 'Ponderacao': ponderacao, 'Propagacao': propagacao, 'PorcRot': r, 'NumExp': e, 'SeedExp': seed, 'TempExp': tempo, 'NumNRot': nRotulos, 'Acuracia': acuracia, 'F_measure': f_measure}]
+        dados = [{'test_ID': test_ID, 'Dataset': nome_dataset, 'Adjacencia': adjacencia, 'k': k, 'Simetrica': simetrica, 'Conectado': conectado, 'Ponderacao': ponderacao, 'Propagacao': propagacao, 'PorcRot': r, 'NumExp': e, 'SeedExp': seed, 'TempExp': tempo, 'NumNRot': nRotulos, 'Acuracia': acuracia, 'F_measure': f_measure}]
 
         dados = pd.DataFrame(dados)
         df = pd.concat([df, dados], ignore_index=True)
