@@ -55,7 +55,7 @@ Quantidade_rotulos = [0.02, 0.05, 0.08, 0.1]
 
 Quantidade_experimentos = 30
 
-Propagacao = ["GRF", "RMGT", "LGC", "LapRLS", "LapSVM"]
+Propagacao = ["GRF", "RMGT", "LGC"]
 
 test_ID = 0
 
