@@ -86,7 +86,8 @@ for nome_dataset in datasets:
    
     # Usado no RMGT
     omega = retornar_omega(classes)
-
+    
+    del df
     # 2 - Para cada valor de K
     for k in K:
         # Usado no RBF
