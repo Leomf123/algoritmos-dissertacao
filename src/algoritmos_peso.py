@@ -13,12 +13,11 @@ def RBF(matriz_adjacencia, matriz_distancia, sigma):
 
   for i in range(matriz_adjacencia.shape[0]):
     for j in range(matriz_adjacencia.shape[1]):
-      if matriz_adjacencia[i][j] != 0:
-        matriz_pesos[i][j] = np.exp(-1*np.power(2,matriz_distancia[i][j])/2*np.power(2,sigma))
+      matriz_pesos[i][j] = np.exp(-1*np.power(2,matriz_distancia[i][j])/2*np.power(2,sigma))
   
   #print("feito")
 
-  return matriz_pesos
+  return matriz_pesos * matriz_adjacencia
 
 # HM Kernel para calcular a matriz de pesos
 # entrada: matriz de adjacencias, matriz de distancias e k
@@ -33,12 +32,11 @@ def HM(matriz_adjacencia,matriz_distancia,k):
     psi_i = matriz_distancia[i][k]
     for j in range(matriz_adjacencia.shape[1]):
       psi_j = matriz_distancia[j][k]
-      if matriz_adjacencia[i][j] != 0:
-        matriz_pesos[i][j] = np.exp(-1*np.power(2,matriz_distancia[i][j])/np.power(2,max(psi_i,psi_j)))
+      matriz_pesos[i][j] = np.exp(-1*np.power(2,matriz_distancia[i][j])/np.power(2,max(psi_i,psi_j)))
   
   #print("feito")
 
-  return matriz_pesos
+  return matriz_pesos * matriz_adjacencia
 
 def LLE(dados,matriz_adjacencia):
 
@@ -71,6 +69,10 @@ def LLE(dados,matriz_adjacencia):
    
     for j in range(len(w)):
       matriz_pesos[i][posicoes[j]] = w[j]/ np.sum(w)
+    
+  symFKNN = np.any(matriz_adjacencia > 1)
+  if symFKNN:
+    matriz_pesos = matriz_pesos * matriz_adjacencia
 
   matriz_pesos = 1/2*(matriz_pesos + matriz_pesos.T)
 
