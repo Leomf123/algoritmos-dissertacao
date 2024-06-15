@@ -64,7 +64,6 @@ inicio_geral = time.time()
 # 1 - Para cada dataset
 for nome_dataset in datasets:
     inicio = time.time()
-    tempo = 0
     print("Datset: ", nome_dataset)
     # Lendo dados
     df = pd.read_csv('data/' + nome_dataset, header=None)
@@ -142,7 +141,7 @@ for nome_dataset in datasets:
 
                             # Gravar tempo que levou
                             fim = time.time()
-                            tempo = fim - ( inicio + tempo )
+                            tempo = (fim - inicio) / 60
 
                             # gravar resultado em uma linha usando pandas
                             gravar_resultados(test_ID, nome_dataset, k, adjacencia, simetrica, conectado, ponderacao, r, e, propagacao, seeds[e], tempo, nRotulos, acuracia, f_measure)
