@@ -6,25 +6,29 @@ from LapSVM import propagar_LapSVM
 # GRF para calcular a matriz de rótulos propagados
 # entrada: matriz de pesos, rótulos
 # saída: matriz de rótulos propagados
-def GRF(posicoes_rotulos, ordemObjetos, LNaoRotuladoRotulado, LNaoRotulado, yl, rotulos):
+def GRF(posicoes_rotulos, ordemObjetos, LNaoRotuladoRotulado, LNaoRotulado, yl, rotulos, classes):
 
   #print("inicializando GRF", end="... ")
-
-  resultado = np.zeros((rotulos.shape[0]),dtype=int)
-  # Os rotulos originais continuam da mesma forma
-  resultado[ordemObjetos] = rotulos[ordemObjetos]
 
   f = -np.linalg.inv(LNaoRotulado).dot(LNaoRotuladoRotulado.dot(yl))
 
   # Formatacao dos dados nao rotulados
   ordemNaoRotulado = ordemObjetos[len(posicoes_rotulos):]
-  for i in range(len(ordemNaoRotulado)):
-    posicao = np.argmax(f[i,:])
-    resultado[ordemNaoRotulado[i]]= posicao + 1
+  
+  # Atribuição com CMN
+  q = 1/classes.shape[0]
+  fCMN = np.zeros(f.shape)
+  resultadoCMN = np.array(rotulos) 
+  for i in range(f.shape[0]):
+    for j in range(f.shape[1]):
+      fCMN[i,j] = q*(f[i,j]/ np.sum(f[:,j]))
+
+    rotulo = np.argmax(fCMN[i,:]) + 1
+    resultadoCMN[ordemNaoRotulado[i]] = rotulo
   
   #print("feito")
 
-  return resultado
+  return resultadoCMN
 
 
 # RMGT para calcular a matriz de rótulos propagados
@@ -67,7 +71,7 @@ def RMGT(posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRo
 # LGC para calcular a matriz de rótulos propagados
 # entrada: matriz de pesos, rótulos e parametro regularização
 # saída: vetor de rótulos propagados
-def LGC(L_normalizada, matriz_rotulos, rotulos, parametro_regularizacao):
+def LGC(L_normalizada, matriz_rotulos, classes, parametro_regularizacao):
 
   #print("inicializando LGC", end="... ")
 
@@ -76,26 +80,31 @@ def LGC(L_normalizada, matriz_rotulos, rotulos, parametro_regularizacao):
  
   f = np.linalg.inv(matriz_identidade + L_normalizada/parametro_regularizacao).dot(matriz_rotulos)
 
-  resultado = np.zeros((rotulos.shape[0]),dtype=int)
-
+  # Atribuição com CMN
+  q = 1/classes.shape[0]
+  fCMN = np.zeros(f.shape)
+  resultadoCMN = np.zeros((matriz_rotulos.shape[0]),dtype=int)
   for i in range(f.shape[0]):
-    posicao = np.argmax(f[i,:])
-    resultado[i]= posicao + 1
-  
+    for j in range(f.shape[1]):
+      fCMN[i,j] = q*(f[i,j]/ np.sum(f[:,j]))
+
+    rotulo = np.argmax(fCMN[i,:]) + 1
+    resultadoCMN[i] = rotulo
+
   #print("feito")
 
-  return resultado
+  return resultadoCMN
 
 def propagar(dados, L, posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada, yl, rotulos, matriz_rotulos, classes, medida_distancia, k, lambda_k, lambda_u, omega = 0, parametro_regularizacao = 0.99, algoritmo = "GRF"):
    
    if algoritmo == "GRF":
-      return GRF(posicoes_rotulos, ordemObjetos, LNaoRotuladoRotulado, LNaoRotulado, yl, rotulos)
+      return GRF(posicoes_rotulos, ordemObjetos, LNaoRotuladoRotulado, LNaoRotulado, yl, rotulos, classes)
    
    elif algoritmo == "RMGT":
       return RMGT(posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, yl, rotulos, omega)
    
    elif algoritmo == "LGC":
-      return LGC(L_normalizada, matriz_rotulos, rotulos, parametro_regularizacao)
+      return LGC(L_normalizada, matriz_rotulos, classes, parametro_regularizacao)
    
    elif algoritmo == "LapRLS":
       return propagar_LapRLS(dados, L, posicoes_rotulos, ordemObjetos, rotulos, classes, medida_distancia, k, lambda_k, lambda_u)
