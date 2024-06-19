@@ -38,12 +38,6 @@ def RMGT(posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRo
 
   #print("inicializando RMGT", end="... ")
 
-  resultado = np.zeros((rotulos.shape[0]),dtype=int)
-
-  # Os rotulos originais continuam da mesma forma
-  resultado[ordemObjetos] = rotulos[ordemObjetos]
-
-
   vetor_1 = np.ones((LNaoRotulado.shape[0],1),dtype=int)
   vetor_2 = np.ones((LRotulado.shape[0],1),dtype=int)
 
@@ -55,8 +49,9 @@ def RMGT(posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRo
     
   f4 = f2.dot(f3)
 
-  f = f1 + f4 
+  f = f1 + f4
 
+  resultado = np.array(rotulos)
   # Formatacao dos dados nao rotulados
   ordemNaoRotulado = ordemObjetos[len(posicoes_rotulos):]
   for i in range(len(ordemNaoRotulado)):
