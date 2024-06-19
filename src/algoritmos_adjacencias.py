@@ -58,6 +58,8 @@ def MST(matriz_distancias, mpts):
     # 3- Gerar MST: Aplicar Prim
     MST = np.array(primMST(grafoMRD))
 
+    MST[MST != 0] = 1
+
     #print("feito")
 
     return MST
