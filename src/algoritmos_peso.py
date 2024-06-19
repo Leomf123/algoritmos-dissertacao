@@ -29,10 +29,10 @@ def HM(matriz_adjacencia,matriz_distancia,k):
   matriz_pesos = np.zeros((matriz_adjacencia.shape[0],matriz_adjacencia.shape[1]))
 
   for i in range(matriz_adjacencia.shape[0]):
-    psi_i = matriz_distancia[i][k]
+    psi_i = np.partition(matriz_distancia[i], k)[:k]
     for j in range(matriz_adjacencia.shape[1]):
-      psi_j = matriz_distancia[j][k]
-      matriz_pesos[i][j] = np.exp(-1*np.power(2,matriz_distancia[i][j])/np.power(2,max(psi_i,psi_j)))
+      psi_j = np.partition(matriz_distancia[j], k)[:k]
+      matriz_pesos[i][j] = np.exp(-1*np.power(2,matriz_distancia[i][j])/np.power(2,max(psi_i[-1],psi_j[-1])))
   
   #print("feito")
 
