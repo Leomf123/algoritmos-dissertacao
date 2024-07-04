@@ -5,40 +5,40 @@ import numpy as np
 # RBF Kernel para calcular a matriz de pesos
 # entrada: matriz de adjacencias, matriz de distancias e sigma
 # saída: matriz de pesos
-def RBF(matriz_adjacencia, matriz_distancia, sigma):
+def RBF(matriz_distancias, sigma):
 
   #print("inicializando RBF", end="... ")
+  n = matriz_distancias.shape[0]
 
-  matriz_pesos = np.zeros((matriz_adjacencia.shape[0],matriz_adjacencia.shape[1]))
-
-  for i in range(matriz_adjacencia.shape[0]):
-    for j in range(matriz_adjacencia.shape[1]):
-      matriz_pesos[i][j] = np.exp(-1*np.power(2,matriz_distancia[i][j])/2*np.power(2,sigma))
+  matriz_kernel = np.zeros((n, n))
+  for i in range(n):
+    for j in range(n):
+      matriz_kernel[i][j] = np.exp(-1*np.power(2,matriz_distancias[i][j])/2*np.power(2,sigma))
   
   #print("feito")
 
-  return matriz_pesos * matriz_adjacencia
+  return matriz_kernel
 
 # HM Kernel para calcular a matriz de pesos
 # entrada: matriz de adjacencias, matriz de distancias e k
 # saída: matriz de pesos
-def HM(matriz_adjacencia,matriz_distancia,k):
+def HM(matriz_distancias, k):
 
   #print("Inicializando HM", end="... ")
+  n = matriz_distancias.shape[0]
 
-  matriz_pesos = np.zeros((matriz_adjacencia.shape[0],matriz_adjacencia.shape[1]))
-
-  for i in range(matriz_adjacencia.shape[0]):
-    psi_i = np.partition(matriz_distancia[i], k)[:k]
-    for j in range(matriz_adjacencia.shape[1]):
-      psi_j = np.partition(matriz_distancia[j], k)[:k]
-      matriz_pesos[i][j] = np.exp(-1*np.power(2,matriz_distancia[i][j])/np.power(2,max(psi_i[-1],psi_j[-1])))
+  matriz_kernel = np.zeros((n, n))
+  for i in range(n):
+    psi_i = np.partition(matriz_distancias[i], k)[:k]
+    for j in range(n):
+      psi_j = np.partition(matriz_distancias[j], k)[:k]
+      matriz_kernel[i][j] = np.exp(-1*np.power(2,matriz_distancias[i][j])/np.power(2,max(psi_i[-1],psi_j[-1])))
   
   #print("feito")
 
-  return matriz_pesos * matriz_adjacencia
+  return matriz_kernel
 
-def LLE(dados,matriz_adjacencia):
+def LLE(dados, matriz_adjacencia):
 
   #print("Inicializando LLE", end="... " )
 
@@ -81,13 +81,13 @@ def LLE(dados,matriz_adjacencia):
   return matriz_pesos
 
 
-def gerar_matriz_pesos(dados,matriz_adjacencia,matriz_distancia,sigma = 0.2,k = 2, algoritmo = "RBF"):
+def gerar_matriz_pesos(dados, matriz_adjacencias, matriz_distancias, sigma = 0.2, k = 2, algoritmo = "RBF"):
   
   if algoritmo == "RBF":
-    return RBF(matriz_adjacencia, matriz_distancia, sigma)
+    return matriz_adjacencias * RBF(matriz_distancias, sigma)
   
   elif algoritmo == "HM":
-    return HM(matriz_adjacencia ,matriz_distancia, k)
+    return matriz_adjacencias * HM(matriz_distancias, k)
   
   elif algoritmo == "LLE":
-    return LLE(dados, matriz_adjacencia)
+    return LLE(dados, matriz_adjacencias)
