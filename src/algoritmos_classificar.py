@@ -15,20 +15,14 @@ def GRF(posicoes_rotulos, ordemObjetos, LNaoRotuladoRotulado, LNaoRotulado, yl, 
   # Formatacao dos dados nao rotulados
   ordemNaoRotulado = ordemObjetos[len(posicoes_rotulos):]
   
-  # Atribuição com CMN
-  q = 1/classes.shape[0]
-  fCMN = np.zeros(f.shape)
-  resultadoCMN = np.array(rotulos) 
+  resultado = np.array(rotulos) 
   for i in range(f.shape[0]):
-    for j in range(f.shape[1]):
-      fCMN[i,j] = q*(f[i,j]/ np.sum(f[:,j]))
-
-    rotulo = np.argmax(fCMN[i,:]) + 1
-    resultadoCMN[ordemNaoRotulado[i]] = rotulo
+    rotulo = np.argmax(f[i,:]) + 1
+    resultado[ordemNaoRotulado[i]] = rotulo
   
   #print("feito")
 
-  return resultadoCMN
+  return resultado
 
 
 # RMGT para calcular a matriz de rótulos propagados
@@ -51,12 +45,13 @@ def RMGT(posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRo
 
   f = f1 + f4
 
-  resultado = np.array(rotulos)
   # Formatacao dos dados nao rotulados
   ordemNaoRotulado = ordemObjetos[len(posicoes_rotulos):]
-  for i in range(len(ordemNaoRotulado)):
-    posicao = np.argmax(f[i,:])
-    resultado[ordemNaoRotulado[i]]= posicao + 1
+
+  resultado = np.array(rotulos) 
+  for i in range(f.shape[0]):
+    rotulo = np.argmax(f[i,:]) + 1
+    resultado[ordemNaoRotulado[i]] = rotulo
   
   #print("feito")
 
@@ -75,20 +70,15 @@ def LGC(L_normalizada, matriz_rotulos, classes, parametro_regularizacao):
  
   f = np.linalg.inv(matriz_identidade + L_normalizada/parametro_regularizacao).dot(matriz_rotulos)
 
-  # Atribuição com CMN
-  q = 1/classes.shape[0]
-  fCMN = np.zeros(f.shape)
-  resultadoCMN = np.zeros((matriz_rotulos.shape[0]),dtype=int)
+  
+  resultado = np.zeros((matriz_rotulos.shape[0]),dtype=int)
   for i in range(f.shape[0]):
-    for j in range(f.shape[1]):
-      fCMN[i,j] = q*(f[i,j]/ np.sum(f[:,j]))
-
-    rotulo = np.argmax(fCMN[i,:]) + 1
-    resultadoCMN[i] = rotulo
+    rotulo = np.argmax(f[i,:]) + 1
+    resultado[i] = rotulo
 
   #print("feito")
 
-  return resultadoCMN
+  return resultado
 
 def propagar(dados, L, posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada, yl, rotulos, matriz_rotulos, classes, medida_distancia, k, lambda_k, lambda_u, omega = 0, parametro_regularizacao = 0.99, algoritmo = "GRF"):
    
