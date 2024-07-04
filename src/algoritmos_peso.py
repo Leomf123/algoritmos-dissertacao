@@ -70,7 +70,7 @@ def LLE(dados,matriz_adjacencia):
     for j in range(len(w)):
       matriz_pesos[i][posicoes[j]] = w[j]/ np.sum(w)
     
-  symFKNN = np.any(matriz_adjacencia > 1)
+  symFKNN = np.any(matriz_adjacencia == 2)
   if symFKNN:
     matriz_pesos = matriz_pesos * matriz_adjacencia
 
