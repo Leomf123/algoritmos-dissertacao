@@ -11,6 +11,8 @@ import numpy as np
 from scipy.spatial.distance import cdist
 import scipy.optimize as sco
 
+from utils import retornar_sigma
+
 #=========================================================================================================
 #================================ 1. ALGORITHM
 
@@ -48,7 +50,7 @@ class LapSVM(object):
         Y : ndarray shape (n_labeled_samples,)
             Labels
         """
-        print("inicializando LapSVM fit", end="... ")
+        #print("inicializando LapSVM fit", end="... ")
         # Storing parameters
         l = X.shape[0]
         u = X_no_label.shape[0]
@@ -81,7 +83,7 @@ class LapSVM(object):
         #print('done')
         
         # Memory optimization
-        del K, J
+        del J
         
         # Solving beta using scypy optimize function
         
@@ -115,7 +117,7 @@ class LapSVM(object):
         x0 = np.zeros(l)
         
         beta_hat = sco.minimize(objective_func, x0, jac=objective_grad, \
-                                constraints=cons, bounds=bounds, method='SLSQP')['x']
+                                constraints=cons, bounds=bounds, method='trust-constr')['x']
         #beta_hat = sco.minimize(objective_func, x0, jac=objective_grad, hess=objective_hess,
         #                constraints=cons, bounds=bounds, method='trust-constr')['x']
         #print('done')
@@ -130,7 +132,10 @@ class LapSVM(object):
         ###########################################################################
         
         # Finding optimal decision boundary b using labeled data
-        new_K = self.kernel(self.X, X)
+        #new_K = self.kernel(self.X, X)
+        indices_X = np.arange(l)  
+        #new_K = self.kernel(self.X, X)
+        new_K = K[:, indices_X]
         f = np.squeeze(np.array(self.alpha)).dot(new_K)
         
         def to_minimize(b):
@@ -141,7 +146,7 @@ class LapSVM(object):
         res = np.array([to_minimize(b) for b in bs])
         self.b = bs[res == np.min(res)][0]
         
-        print("feito")
+        #print("feito")
 
     def predict(self, Xtest):
         """
@@ -155,12 +160,12 @@ class LapSVM(object):
         predictions : ndarray shape (n_samples, )
             Predicted labels for Xtest
         """
-        print("inicializando LapSVM predict", end="... ")
+        #print("inicializando LapSVM predict", end="... ")
         # Computing K_new for X
         new_K = self.kernel(self.X, Xtest)
         f = np.squeeze(np.array(self.alpha)).dot(new_K)
         predictions = np.array((f > self.b) * 1)
-        print("feito")
+        #print("feito")
         return predictions
     
 
@@ -184,10 +189,8 @@ class LapSVM(object):
         
         matriz_kernel = np.zeros((matriz_distancia.shape[0],matriz_distancia.shape[1]))
 
-        sigma = 0
-        for i in range(matriz_distancia.shape[0]):
-            sigma += matriz_distancia[i][self.k]/ (3 * matriz_distancia.shape[0])
-
+        sigma = retornar_sigma(matriz_distancia, self.k)
+        
         for i in range(matriz_distancia.shape[0]):
             for j in range(matriz_distancia.shape[1]):
                 matriz_kernel[i][j] = np.exp(-1*np.power(2,matriz_distancia[i][j])/2*np.power(2,sigma))
@@ -226,10 +229,10 @@ def propagar_LapSVM(dados, L, posicoes_rotulos, ordemObjetos, rotulos, classes, 
             if Yl[j] == rotulo:
                 yl_one_versus_all[j] = 1
             else:
-                yl_one_versus_all[j] = -1
+                yl_one_versus_all[j] = 0
         
 
-        propagacao_LapSVM.fit(dados_rotulados,dados_nao_rotulados,yl_one_versus_all)
+        propagacao_LapSVM.fit(dados_rotulados, dados_nao_rotulados, yl_one_versus_all)
 
         rotulos_propagados = propagacao_LapSVM.predict(dados_nao_rotulados)
 
