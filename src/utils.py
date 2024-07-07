@@ -134,7 +134,6 @@ def definir_medida_distancia(nome_dado):
     datasets_euclidean = [
         "autoPrice.data",
         "banknote-authentication.data",
-        "cardiotocography.data",
         "chscase_geyser1.data",
         "diggle_table.data",
         "iris.data",
@@ -168,6 +167,7 @@ def definir_medida_distancia(nome_dado):
         "semeion.data",
         "mfeat-factors.data",
         "mfeat-karhunen.data",
+        "cardiotocography.data",
     ]
 
     if nome_dado in datasets_tanimoto:
