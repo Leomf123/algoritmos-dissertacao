@@ -5,17 +5,10 @@
 #================================ 0. MODULE
 
 import numpy as np
-import math
-from numpy import linalg
-from scipy.sparse import csr_matrix
-
-import sklearn
-from sklearn import datasets
 from scipy.spatial.distance import cdist
-from sklearn.neighbors import kneighbors_graph
 import scipy.optimize as sco
 
-from itertools import cycle, islice
+from utils import retornar_sigma
 
 #=========================================================================================================
 #================================ 1. ALGORITHM
@@ -23,7 +16,7 @@ from itertools import cycle, islice
 class LapRLS(object):
 
     def __init__(self, L, distancy, k, lambda_k, lambda_u,
-                 learning_rate=None, n_iterations=None, solver='closed-form'):
+                 learning_rate=0.1, n_iterations=100 , solver='gradient-descent'):
         """
         Laplacian Regularized Least Square algorithm
 
@@ -62,7 +55,7 @@ class LapRLS(object):
         Y : ndarray shape (n_labeled_samples,)
             Labels
         """
-        print("inicializando LapRLS fit", end="... ")
+        #print("inicializando LapRLS fit", end="... ")
         # Storing parameters
         l = X.shape[0]
         u = X_no_label.shape[0]
@@ -98,13 +91,13 @@ class LapRLS(object):
             
             # Memory optimization
             del self.Y, J
-            
+        
         elif self.solver == 'gradient-descent':
             """
             If solver is Gradient-descent then a learning rate and an iteration number must be provided
             """
             
-            print('Performing gradient descent...')
+            #print('Performing gradient descent...')
             
             # Initializing alpha
             self.alpha = np.zeros(n)
@@ -125,14 +118,14 @@ class LapRLS(object):
                 # Computing gradient & updating alpha
                 self.alpha -= self.learning_rate * RLS_grad(self.alpha)
                 
-                if i % 50 == 0:
-                    print("\r[%d / %d]" % (i, self.n_iterations) ,end = "")
+                #if i % 50 == 0:
+                    #print("\r[%d / %d]" % (i, self.n_iterations) ,end = "")
                     
-            print('\n')
+            #print('\n')
         
         elif self.solver == 'L-BFGS-B':
             
-            print('Performing L-BFGS-B', end='...')
+            #print('Performing L-BFGS-B', end='...')
             
             # Initializing alpha
             x0 = np.zeros(n)
@@ -152,12 +145,12 @@ class LapRLS(object):
             
             self.alpha, _, _ = sco.fmin_l_bfgs_b(RLS, x0, RLS_grad, args=(), pgtol=1e-30, factr =1e-30)
             
-            print('done')
-                                    
+            #print('done')
+                                  
         # Finding optimal decision boundary b using labeled data
-        #indices_X = np.arange(l)  
-        new_K = self.kernel(self.X, X)
-        #new_K = K[:, indices_X]
+        indices_X = np.arange(l)  
+        #new_K = self.kernel(self.X, X)
+        new_K = K[:, indices_X]
         f = np.squeeze(np.array(self.alpha)).dot(new_K)
         
         def to_minimize(b):
@@ -168,7 +161,7 @@ class LapRLS(object):
         res = np.array([to_minimize(b) for b in bs])
         self.b = bs[res == np.min(res)][0]
 
-        print("feito")
+        #print("feito")
 
     def predict(self, Xtest):
         """
@@ -182,13 +175,13 @@ class LapRLS(object):
         predictions : ndarray shape (n_samples, )
             Predicted labels for Xtest
         """
-        print("inicializando LapRLS predict", end="... ")
+        #print("inicializando LapRLS predict", end="... ")
         # Computing K_new for X
         new_K = self.kernel(self.X, Xtest)
         f = np.squeeze(np.array(self.alpha)).dot(new_K)
         predictions = np.array((f > self.b) * 1)
         
-        print("feito")
+        #print("feito")
         return predictions
     
 
@@ -212,10 +205,8 @@ class LapRLS(object):
         
         matriz_kernel = np.zeros((matriz_distancia.shape[0],matriz_distancia.shape[1]))
 
-        sigma = 0
-        for i in range(matriz_distancia.shape[0]):
-            sigma += matriz_distancia[i][self.k]/ (3 * matriz_distancia.shape[0])
-
+        sigma = retornar_sigma(matriz_distancia, self.k)
+        
         for i in range(matriz_distancia.shape[0]):
             for j in range(matriz_distancia.shape[1]):
                 matriz_kernel[i][j] = np.exp(-1*np.power(2,matriz_distancia[i][j])/2*np.power(2,sigma))
@@ -253,10 +244,10 @@ def propagar_LapRLS(dados, L, posicoes_rotulos, ordemObjetos, rotulos, classes, 
             if Yl[j] == rotulo:
                 yl_one_versus_all[j] = 1
             else:
-                yl_one_versus_all[j] = -1
+                yl_one_versus_all[j] = 0
         
 
-        propagacao_LapRLS.fit(dados_rotulados,dados_nao_rotulados,yl_one_versus_all)
+        propagacao_LapRLS.fit(dados_rotulados, dados_nao_rotulados, yl_one_versus_all)
 
         rotulos_propagados = propagacao_LapRLS.predict(dados_nao_rotulados)
 
