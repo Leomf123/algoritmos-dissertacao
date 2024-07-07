@@ -56,7 +56,7 @@ Quantidade_rotulos = [0.02, 0.05, 0.08, 0.1]
 
 Quantidade_experimentos = 30
 
-Propagacao = ["GRF", "RMGT", "LGC"]
+Propagacao = ["GRF", "RMGT", "LGC", "LapRLS", "LapSVM"]
 
 test_ID = 0
 
@@ -95,17 +95,15 @@ for nome_dataset in datasets:
 
         # 3 - Para cada algoritmo de adjacencia
         for adjacencia in Adjacencia:
-            print(adjacencia)
             # Gerar matriz de adjacencia
             matriz_adjacencias = gerar_matriz_adjacencias(dados, matriz_distancias, k, adjacencia)
-            
-            simetrica, conectado = checar_matrix_adjacencias(matriz_adjacencias)
 
             # 4 - Para cada ponderação
             for ponderacao in Ponderacao:
-                print(ponderacao)
                 # Gerar matriz pesos
                 matriz_pesos = gerar_matriz_pesos(dados, matriz_adjacencias , matriz_distancias, sigma, k, ponderacao)
+
+                simetrica, conectado = checar_matrix_adjacencias(matriz_pesos)
                 
                 # 5 - Para cada quantidade de rotulos
                 for r in Quantidade_rotulos:
@@ -129,7 +127,6 @@ for nome_dataset in datasets:
 
                         #7 - Para cada algoritmo de classificação semi
                         for propagacao in Propagacao:
-                            print(propagacao)
                             # Propagar rotulos
                             lambda_k = 0.1
                             lambda_u = 0.1
