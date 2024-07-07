@@ -1,109 +1,122 @@
-# Teste de todo o processo com dados artificiais
-import matplotlib.pyplot as plt
-from sklearn.datasets import make_blobs
 import numpy as np
+import pandas as pd
 import random
+import time
 
-from processar_rotulos import retirar_rotulos 
-from utils import gerar_matriz_distancias, checar_matrix_adjacencias
-from algoritmos_adjacencias import gerar_matriz_adjacencias 
+from utils import gerar_matriz_distancias
+from algoritmos_adjacencias import gerar_matriz_adjacencias
 from algoritmos_peso import gerar_matriz_pesos
+from processar_rotulos import retirar_rotulos, medidas_qualidade
 from algoritmos_classificar import propagar
-from processar_rotulos import acuracia
-from utils import ordem_rotulos_primeiro, divisao_L
-from processar_rotulos import one_hot, medidas_qualidade
+from utils import ordem_rotulos_primeiro, divisao_L, gravar_resultados, definir_medida_distancia
+from utils import normalizar_dados, retornar_sigma, retornar_omega, checar_matrix_adjacencias
+from processar_rotulos import one_hot
 
-random.seed(10)
+datasets = [
+    "analcatdata_authorship-458.data",
+]
 
-dados, rotulos = make_blobs(n_samples=10, cluster_std = 1 ,centers=3, n_features=2, random_state=0)
+K = [2, 4, 6, 8, 10, 12, 14, 16]
 
-# Pré-processamento do rotulos para classificação semissupervisionada
-# Primeiro: como o 0 nos rotulos vão representar que não tem rótulo tenho
-# que mudar o rótulo de 0
-# somando 1, ou seja, 0 será 1, 1 será 2, etc
-rotulos = rotulos + 1
+Adjacencia = ["mutKNN", "symKNN", "symFKNN", "MST"]
 
-# classes
-classes = []
-for k in range(len(rotulos)):
-  if not rotulos[k] in classes:
-      classes.append(rotulos[k])
+Ponderacao = ["RBF", "HM", "LLE"]
 
-# Como eu preciso de rotulos faltando, que serão classificados
-# retiro a quantidade dado uma porcentagem ( de 0 a 1 )
-porcentagem_manter = 0.4
-rotulos_semissupervisionado = retirar_rotulos(rotulos, porcentagem_manter, classes)
+Quantidade_rotulos = [0.02, 0.05, 0.08, 0.1]
 
-print("------rotulos faltando---------")
-#print(rotulos_semissupervisionado)
+Quantidade_experimentos = 1
 
-# Gerar o grafo com os dados
-# print(dados)
+Propagacao = ["LapRLS"]
 
-print('----------Distancias------------------------------')
-medida_distancia = 'euclidean'
-matriz_distancias = gerar_matriz_distancias(dados, dados, medida_distancia)
-#print(matriz_distancias)
+test_ID = 0
 
+inicio_geral = time.time()
+# 1 - Para cada dataset
+for nome_dataset in datasets:
+    inicio = time.time()
+    print("Datset: ", nome_dataset)
+    # Lendo dados
+    df = pd.read_csv('data/' + nome_dataset, header=None)
 
-print('--------------Adjacencia-------------------')
-k = 2
-matriz_adjacencias = gerar_matriz_adjacencias(dados, matriz_distancias, k, 'symFKNN')
-#print(matriz_adjacencias)
+    # Conversão para numpy
+    dados = df.to_numpy()
+    # Separando rótulos dos dados
+    ultima_coluna = dados.shape[1] - 1
+    rotulos = np.array(dados[:,ultima_coluna], dtype='int64')
+    dados = np.array(dados[:,:ultima_coluna])
+    # Pegar classes
+    classes = np.unique(rotulos)
 
-print('------------------Pesos----------------------------------')
-sigma = 0
-for i in range(matriz_distancias.shape[0]):
-  sigma += matriz_distancias[i][k]/ (3 * matriz_distancias.shape[0])
-#sigma = 0.2
-matriz_pesos = gerar_matriz_pesos(dados, matriz_adjacencias, matriz_distancias, sigma, k, "RBF")
-#print(matriz_pesos)
+    # Normalizar dados
+    dados = normalizar_dados(nome_dataset, dados)
 
-checar_matrix_adjacencias(matriz_pesos)
+    # medida_distancia = 'euclidean'
+    medida_distancia = definir_medida_distancia(nome_dataset)
+    matriz_distancias = gerar_matriz_distancias(dados, dados, medida_distancia)
+   
+    # Usado no RMGT
+    omega = retornar_omega(classes)
+    
+    del df
+    # 2 - Para cada valor de K
+    for k in K:
+        # Usado no RBF
+        sigma = retornar_sigma(matriz_distancias, k)
 
-posicoes_rotulos, ordemObjetos = ordem_rotulos_primeiro(rotulos_semissupervisionado)
+        # 3 - Para cada algoritmo de adjacencia
+        for adjacencia in Adjacencia:
+            # Gerar matriz de adjacencia
+            matriz_adjacencias = gerar_matriz_adjacencias(dados, matriz_distancias, k, adjacencia)
 
-# Extracao das submatrizes da matriz laplaciana
-L, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada = divisao_L(matriz_pesos, posicoes_rotulos, ordemObjetos)
+            # 4 - Para cada ponderação
+            for ponderacao in Ponderacao:
+                # Gerar matriz pesos
+                matriz_pesos = gerar_matriz_pesos(dados, matriz_adjacencias , matriz_distancias, sigma, k, ponderacao)
 
-matriz_rotulos = one_hot(rotulos_semissupervisionado)
-yl = matriz_rotulos[posicoes_rotulos,:]
+                simetrica, conectado = checar_matrix_adjacencias(matriz_pesos)
+                
+                # 5 - Para cada quantidade de rotulos
+                for r in Quantidade_rotulos:
 
-print('----------Propagação------------------------------')
-omega =  np.random.rand(len(classes),1)
+                    #Gerar os seeds
+                    seeds = random.sample(range(1, 200), Quantidade_experimentos )
 
-parametro_regularizacao = 0.99
+                    # 6 - Quantidade de experimentos
+                    for e in range(Quantidade_experimentos):
 
-lambda_k = 0.1
-lambda_u = 0.1
+                        # Retirar quantidade de rotulos
+                        rotulos_semissupervisionado = retirar_rotulos(rotulos, r, classes, seeds[e])
 
-rotulos_propagados = propagar(dados, L, posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada, yl, rotulos_semissupervisionado, matriz_rotulos, classes, medida_distancia, k, lambda_k, lambda_u, omega, parametro_regularizacao, algoritmo = "GRF")
-print('Rotulos originais:')
-print(rotulos)
-print('Rotulos faltando:')
-print(rotulos_semissupervisionado)
-print('Rotulos Propagados:')
-print(rotulos_propagados)
+                        posicoes_rotulos, ordemObjetos = ordem_rotulos_primeiro(rotulos_semissupervisionado)
 
-print('------------acuracia--------------')
-print(acuracia(rotulos, rotulos_propagados, rotulos_semissupervisionado))
-acuraci, f_measure = medidas_qualidade(posicoes_rotulos, ordemObjetos, rotulos, rotulos_propagados)
+                        # Extracao das submatrizes da matriz laplaciana
+                        L, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada = divisao_L(matriz_pesos, posicoes_rotulos, ordemObjetos)
+                        
+                        matriz_rotulos = one_hot(rotulos_semissupervisionado)
+                        yl = matriz_rotulos[posicoes_rotulos,:]
 
-print(acuraci)
-print(f_measure)
+                        #7 - Para cada algoritmo de classificação semi
+                        for propagacao in Propagacao:
+                            # Propagar rotulos
+                            lambda_k = 0.1
+                            lambda_u = 0.1
+                            # Usado no LGC
+                            parametro_regularizacao = 0.99
+                            rotulos_propagados = propagar(dados, L, posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada, yl, rotulos_semissupervisionado, matriz_rotulos, classes, medida_distancia, k, lambda_k, lambda_u, omega, parametro_regularizacao, propagacao)
 
+                            # Usar medidas de qualidade
+                            acuracia, f_measure, nRotulos = medidas_qualidade(posicoes_rotulos, ordemObjetos, rotulos, rotulos_propagados)
 
-plt.scatter(dados[:, 0], dados[:, 1], marker="o", c=rotulos, s=25)
-plt.title('rotulos originais')
-plt.colorbar(label='cor por classe')
-plt.show()
+                            # Gravar tempo que levou
+                            fim = time.time()
+                            tempo = (fim - inicio) / 60
 
-plt.scatter(dados[:, 0], dados[:, 1], marker="o", c=rotulos_semissupervisionado, s=25)
-plt.title('rotulos semissupervisionados')
-plt.colorbar(label='cor por classe')
-plt.show()
+                            # gravar resultado em uma linha usando pandas
+                            gravar_resultados(test_ID, nome_dataset, k, adjacencia, simetrica, conectado, ponderacao, r, e, propagacao, seeds[e], tempo, nRotulos, acuracia, f_measure)
 
-plt.scatter(dados[:, 0], dados[:, 1], marker="o", c=rotulos_propagados, s=25)
-plt.title('rotulos propagados')
-plt.colorbar(label='cor por classe')
-plt.show()
+                            print("test_ID: ", test_ID)
+
+                            test_ID += 1
+fim_geral = time.time()
+tempo_geral = fim_geral - inicio_geral
+print("Tempo geral execução (min): ", tempo_geral/60)
