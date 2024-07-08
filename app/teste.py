@@ -11,7 +11,41 @@ from algoritmos_classificar import propagar
 from utils import ordem_rotulos_primeiro, divisao_L, gravar_resultados, definir_medida_distancia
 from utils import normalizar_dados, retornar_sigma, retornar_omega, checar_matrix_adjacencias
 from processar_rotulos import one_hot
-
+'''
+datasets = [
+    "ace_ECFP_4.data",
+    "ace_ECFP_6.data",
+    "analcatdata_authorship-458.data",
+    "armstrong2002v1.data",
+    "articles_1442_5.data",
+    "articles_1442_80.data",
+    "autoPrice.data",
+    "banknote-authentication.data",
+    "cardiotocography.data",
+    "chowdary2006.data",
+    "chscase_geyser1.data",
+    "cox2_ECFP_6.data",
+    "dhfr_ECFP_4.data",
+    "dhfr_ECFP_6.data",
+    "diggle_table.data",
+    "fontaine_ECFP_4.data",
+    "fontaine_ECFP_6.data",
+    "gordon2002.data",
+    "iris.data",
+    "m1_ECFP_4.data",
+    "m1_ECFP_6.data",
+    "mfeat-factors.data",
+    "mfeat-karhunen.data",
+    "seeds.data",
+    "segmentation-normcols.data",
+    "semeion.data",
+    "stock.data",
+    "transplant.data",
+    "wdbc.data",
+    "wine-187.data",
+    "yeast_Galactose.data"
+]
+'''
 datasets = [
     "analcatdata_authorship-458.data",
 ]
@@ -114,7 +148,7 @@ for nome_dataset in datasets:
                             # gravar resultado em uma linha usando pandas
                             gravar_resultados(test_ID, nome_dataset, k, adjacencia, simetrica, conectado, ponderacao, r, e, propagacao, seeds[e], tempo, nRotulos, acuracia, f_measure)
 
-                            print("test_ID: ", test_ID)
+                            print("test_ID: ", test_ID, ' ', nRotulos)
 
                             test_ID += 1
 fim_geral = time.time()
