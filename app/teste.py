@@ -69,7 +69,7 @@ inicio_geral = time.time()
 # 1 - Para cada dataset
 for nome_dataset in datasets:
     inicio = time.time()
-    print("Dataset: ", nome_dataset)
+    #print("Dataset: ", nome_dataset)
     # Lendo dados
     df = pd.read_csv('data/' + nome_dataset, header=None)
 
@@ -154,5 +154,5 @@ for nome_dataset in datasets:
                             test_ID += 1
 fim_geral = time.time()
 tempo_geral = fim_geral - inicio_geral
-print("test_ID: ", test_ID)
-print("Tempo geral execução (min): ", tempo_geral/60)
+#print("test_ID: ", test_ID)
+#print("Tempo geral execução (min): ", tempo_geral/60)
