@@ -47,20 +47,21 @@ datasets = [
 ]
 '''
 datasets = [
-    "analcatdata_authorship-458.data",
+    "ace_ECFP_4.data",
+    "ace_ECFP_6.data",
 ]
 
 K = [2, 4, 6, 8, 10, 12, 14, 16]
 
-Adjacencia = ["mutKNN", "symKNN", "symFKNN", "MST"]
+Adjacencia = ["mutKNN"]
 
-Ponderacao = ["RBF", "HM", "LLE"]
+Ponderacao = ["RBF"]
 
 Quantidade_rotulos = [0.02, 0.05, 0.08, 0.1]
 
 Quantidade_experimentos = 1
 
-Propagacao = ["LapRLS"]
+Propagacao = ["GRF"]
 
 test_ID = 0
 
@@ -68,7 +69,7 @@ inicio_geral = time.time()
 # 1 - Para cada dataset
 for nome_dataset in datasets:
     inicio = time.time()
-    print("Datset: ", nome_dataset)
+    print("Dataset: ", nome_dataset)
     # Lendo dados
     df = pd.read_csv('data/' + nome_dataset, header=None)
 
@@ -148,9 +149,10 @@ for nome_dataset in datasets:
                             # gravar resultado em uma linha usando pandas
                             gravar_resultados(test_ID, nome_dataset, k, adjacencia, simetrica, conectado, ponderacao, r, e, propagacao, seeds[e], tempo, nRotulos, acuracia, f_measure)
 
-                            print("test_ID: ", test_ID, ' ', nRotulos)
+                            #print("test_ID: ", test_ID)
 
                             test_ID += 1
 fim_geral = time.time()
 tempo_geral = fim_geral - inicio_geral
+print("test_ID: ", test_ID)
 print("Tempo geral execução (min): ", tempo_geral/60)
