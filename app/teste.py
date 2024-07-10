@@ -11,7 +11,7 @@ from algoritmos_classificar import propagar
 from utils import ordem_rotulos_primeiro, divisao_L, gravar_resultados, definir_medida_distancia
 from utils import normalizar_dados, retornar_sigma, retornar_omega, checar_matrix_adjacencias
 from processar_rotulos import one_hot
-'''
+
 datasets = [
     "ace_ECFP_4.data",
     "ace_ECFP_6.data",
@@ -45,23 +45,18 @@ datasets = [
     "wine-187.data",
     "yeast_Galactose.data"
 ]
-'''
-datasets = [
-    "ace_ECFP_4.data",
-    "ace_ECFP_6.data",
-]
 
 K = [2, 4, 6, 8, 10, 12, 14, 16]
 
-Adjacencia = ["mutKNN"]
+Adjacencia = ["mutKNN", "symKNN", "symFKNN", "MST"]
 
-Ponderacao = ["RBF"]
+Ponderacao = ["RBF", "HM", "LLE"]
 
 Quantidade_rotulos = [0.02, 0.05, 0.08, 0.1]
 
 Quantidade_experimentos = 1
 
-Propagacao = ["GRF"]
+Propagacao = ["LapRLS", "LapSVM"]
 
 test_ID = 0
 
