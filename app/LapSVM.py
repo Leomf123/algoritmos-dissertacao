@@ -110,13 +110,16 @@ class LapSVM(object):
         
         def constraint_grad(beta):
             return np.diag(Y)
+
+        def hessian_zero(beta):
+            return np.zeros((len(beta), len(beta)))
         
         cons = {'type': 'eq', 'fun': constraint_func, 'jac': constraint_grad}
         
         # ===== Solving =====
         x0 = np.zeros(l)
         
-        beta_hat = sco.minimize(objective_func, x0, jac=objective_grad, \
+        beta_hat = sco.minimize(objective_func, x0, jac=objective_grad, hess=hessian_zero, \
                                 constraints=cons, bounds=bounds, method='trust-constr')['x']
         #beta_hat = sco.minimize(objective_func, x0, jac=objective_grad, hess=objective_hess,
         #                constraints=cons, bounds=bounds, method='trust-constr')['x']
