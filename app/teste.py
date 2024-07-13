@@ -13,37 +13,7 @@ from utils import normalizar_dados, retornar_sigma, retornar_omega, checar_matri
 from processar_rotulos import one_hot
 
 datasets = [
-    "ace_ECFP_4.data",
-    "ace_ECFP_6.data",
-    "analcatdata_authorship-458.data",
-    "armstrong2002v1.data",
-    "articles_1442_5.data",
-    "articles_1442_80.data",
-    "autoPrice.data",
-    "banknote-authentication.data",
-    "cardiotocography.data",
-    "chowdary2006.data",
-    "chscase_geyser1.data",
-    "cox2_ECFP_6.data",
-    "dhfr_ECFP_4.data",
-    "dhfr_ECFP_6.data",
-    "diggle_table.data",
-    "fontaine_ECFP_4.data",
-    "fontaine_ECFP_6.data",
-    "gordon2002.data",
-    "iris.data",
-    "m1_ECFP_4.data",
     "m1_ECFP_6.data",
-    "mfeat-factors.data",
-    "mfeat-karhunen.data",
-    "seeds.data",
-    "segmentation-normcols.data",
-    "semeion.data",
-    "stock.data",
-    "transplant.data",
-    "wdbc.data",
-    "wine-187.data",
-    "yeast_Galactose.data"
 ]
 
 K = [2, 4, 6, 8, 10, 12, 14, 16]
@@ -56,7 +26,7 @@ Quantidade_rotulos = [0.02, 0.05, 0.08, 0.1]
 
 Quantidade_experimentos = 1
 
-Propagacao = ["LapRLS", "LapSVM"]
+Propagacao = ["GRF", "RMGT", "LGC", "LapRLS", "LapSVM"]
 
 test_ID = 0
 
@@ -64,7 +34,7 @@ inicio_geral = time.time()
 # 1 - Para cada dataset
 for nome_dataset in datasets:
     inicio = time.time()
-    #print("Dataset: ", nome_dataset)
+    print("Dataset: ", nome_dataset)
     # Lendo dados
     df = pd.read_csv('data/' + nome_dataset, header=None)
 
