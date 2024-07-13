@@ -113,8 +113,6 @@ def gravar_resultados(test_ID, nome_dataset, k, adjacencia, simetrica, conectado
         # salvo arquivo csv
         df.to_csv('Resultados.csv', index=False)
 
-        print('S,test_ID,Dataset,Adjacencia,k,Ponderacao,Simetrica,Conectado,Propagacao,PorcRot,NumExp,SeedExp,TempExp,NumNRot,Acuracia,F_measure')
-
     else:
         
         # leio arquivo csv existente e salvo df
@@ -129,7 +127,6 @@ def gravar_resultados(test_ID, nome_dataset, k, adjacencia, simetrica, conectado
         # salvo arquivo csv mesmo lugar do outro
         df.to_csv('Resultados.csv', index=False)
 
-    print('S,',test_ID,',',nome_dataset,',',adjacencia,',',k,',',ponderacao,',',simetrica,',',conectado,',',propagacao,',',r,',',e,',',seed,',',tempo,',',nRotulos,',',acuracia,',',f_measure)
 
 def definir_medida_distancia(nome_dado):
 
