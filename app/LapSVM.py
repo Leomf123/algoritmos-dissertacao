@@ -99,6 +99,9 @@ class LapSVM(object):
         def objective_grad(beta):
             return np.squeeze(np.array(beta.T.dot(Q) + q))
         
+        def hessian_zero(beta):
+            return np.zeros((len(beta), len(beta)))
+
         # =====Constraint(1)=====
         #   0 <= beta_i <= 1 / l
         bounds = [(0, 1 / l) for _ in range(l)]
@@ -117,8 +120,10 @@ class LapSVM(object):
         # ===== Solving =====
         x0 = np.zeros(l)
         
-        beta_hat = sco.minimize(objective_func, x0, jac=objective_grad, \
-                                constraints=cons, bounds=bounds, method='SLSQP')['x']
+        #beta_hat = sco.minimize(objective_func, x0, jac=objective_grad, \
+        #                        constraints=cons, bounds=bounds, method='SLSQP')['x']
+        beta_hat = sco.minimize(objective_func, x0, jac=objective_grad, hess=hessian_zero, \
+                                constraints=cons, bounds=bounds, method='trust-constr')['x']
                 
         #print('done')
         
