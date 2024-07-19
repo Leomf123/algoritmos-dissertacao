@@ -16,7 +16,7 @@ from utils import retornar_sigma
 class LapRLS(object):
 
     def __init__(self, L, distancy, k, lambda_k, lambda_u,
-                 learning_rate=0.1, n_iterations=100 , solver='L-BFGS-B'):
+                 learning_rate=0.1, n_iterations=100 , solver='closed-form'):
         """
         Laplacian Regularized Least Square algorithm
 
