@@ -2,7 +2,7 @@ import sys
 import os
 
 # Caminho absoluto para o diretório que contém o módulo
-caminho_diretorio = os.path.join(os.path.dirname(__file__), 'algoritmos-dissertacao', 'app')
+caminho_diretorio = os.path.join(os.path.dirname(__file__), 'LapRLS-LBFGS-B', 'app')
 # Adiciona o diretório ao sys.path
 sys.path.append(caminho_diretorio)
 
