@@ -4,7 +4,7 @@ import heapq
 import pandas as pd
 
 
-def gerar_matriz_distancias(X, Y, medida_distancia = 'euclidean'):
+def gerar_matriz_distancias(X, Y, medida_distancia ):
 
   matriz = cdist(X, Y, medida_distancia )
 
@@ -111,12 +111,12 @@ def gravar_resultados(test_ID, nome_dataset, k, adjacencia, simetrica, conectado
 
         df = pd.DataFrame(dados)
         # salvo arquivo csv
-        df.to_csv('ResultadosLapSVM-trust-constr.csv', index=False)
+        df.to_csv('Resultados.csv', index=False)
 
     else:
         
         # leio arquivo csv existente e salvo df
-        df = pd.read_csv('ResultadosLapSVM-trust-constr.csv')
+        df = pd.read_csv('Resultados.csv')
   
         # Adicionando dados
         dados = [{'test_ID': test_ID, 'Dataset': nome_dataset, 'Adjacencia': adjacencia, 'k': k, 'Ponderacao': ponderacao, 'Simetrica': simetrica, 'Conectado': conectado, 'Propagacao': propagacao, 'PorcRot': r, 'NumExp': e, 'SeedExp': seed, 'TempExp': tempo, 'NumNRot': nRotulos, 'Acuracia': acuracia, 'F_measure': f_measure}]
@@ -125,7 +125,7 @@ def gravar_resultados(test_ID, nome_dataset, k, adjacencia, simetrica, conectado
         df = pd.concat([df, dados], ignore_index=True)
 
         # salvo arquivo csv mesmo lugar do outro
-        df.to_csv('ResultadosLapSVM-trust-constr.csv', index=False)
+        df.to_csv('Resultados.csv', index=False)
 
 
 def definir_medida_distancia(nome_dado):
@@ -198,12 +198,10 @@ def normalizar_dados(nome_dado, dados):
 def retornar_sigma(matriz_distancias, k):
     
     n = matriz_distancias.shape[0]
-
     sigma = 0
     for i in range(n):
-        ik = np.partition(matriz_distancias[i], k)[:k]
+        ik = np.sort(matriz_distancias[i])[:k+1]
         sigma += ik[-1]/(3*n)
-    
     return sigma
 
 def retornar_omega(classes):
