@@ -52,7 +52,7 @@ def teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_ex
             # 3 - Para cada algoritmo de adjacencia
             for adjacencia in Adjacencia:
                 # Gerar matriz de adjacencia
-                matriz_adjacencias = gerar_matriz_adjacencias(dados, matriz_distancias, k, adjacencia)
+                matriz_adjacencias = gerar_matriz_adjacencias(dados, matriz_distancias, medida_distancia, k, adjacencia)
 
                 # 4 - Para cada ponderação
                 for ponderacao in Ponderacao:
@@ -84,10 +84,10 @@ def teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_ex
                             #7 - Para cada algoritmo de classificação semi
                             for propagacao in Propagacao:
                                 # Propagar rotulos
-                                lambda_k = 0.1
-                                lambda_u = 0.1
+                                lambda_k = 0.01
+                                lambda_u = 0.01
                                 # Usado no LGC
-                                parametro_regularizacao = 0.99
+                                parametro_regularizacao = 0.01
                                 rotulos_propagados = propagar(dados, L, posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada, yl, rotulos_semissupervisionado, matriz_rotulos, classes, medida_distancia, k, lambda_k, lambda_u, omega, parametro_regularizacao, propagacao)
 
                                 # Usar medidas de qualidade
