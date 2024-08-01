@@ -29,9 +29,9 @@ def HM(matriz_distancias, k):
 
   matriz_kernel = np.zeros((n, n))
   for i in range(n):
-    psi_i = np.partition(matriz_distancias[i], k)[:k]
+    psi_i = np.sort(matriz_distancias[i])[:k+1]
     for j in range(n):
-      psi_j = np.partition(matriz_distancias[j], k)[:k]
+      psi_j = np.sort(matriz_distancias[j])[:k+1]
       matriz_kernel[i][j] = np.exp(-1*np.power(2,matriz_distancias[i][j])/np.power(2,max(psi_i[-1],psi_j[-1])))
   
   #print("feito")
