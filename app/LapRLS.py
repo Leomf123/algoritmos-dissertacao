@@ -85,7 +85,7 @@ class LapRLS(object):
             predictions = np.array((f > b) * 1)
             return - (sum(predictions == Y) / len(predictions))
 
-        bs = np.linspace(0, 1, num=1000001)
+        bs = np.linspace(0, 1, num=101)
         res = np.array([to_minimize(b) for b in bs])
         self.b = bs[res == np.min(res)][0]
 
