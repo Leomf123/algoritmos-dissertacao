@@ -1,21 +1,11 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-
-
-#=========================================================================================================
-#================================ 0. MODULE
-
-
 import numpy as np
 from scipy.spatial.distance import cdist
 import scipy.optimize as sco
 
 from utils import retornar_sigma
 
-#=========================================================================================================
-#================================ 1. ALGORITHM
-
+# Classe LapSVM adaptada da classe LapSVM do repositório:
+# https://github.com/HugoooPerrin/semi-supervised-learning
 
 class LapSVM(object):
 
@@ -37,7 +27,7 @@ class LapSVM(object):
         self.lambda_u = lambda_u
     
 
-    def fit(self, X, X_no_label, Y):
+    def labelDiffusion(self, X, X_no_label, Y):
         """
         Fit the model
         
@@ -52,9 +42,9 @@ class LapSVM(object):
         """
         #print("inicializando LapSVM fit", end="... ")
         # Storing parameters
-        l = X.shape[0]
+        self.l = X.shape[0]
         u = X_no_label.shape[0]
-        n = l + u
+        n = self.l + u
         
         # Building main matrices
         self.X = np.concatenate([X, X_no_label], axis=0)
@@ -65,21 +55,21 @@ class LapSVM(object):
         
         # Computing K with k(i,j) = kernel(i, j)
         #print('Computing kernel matrix', end='...')
-        K = self.kernel(self.X, self.X)
+        self.matriz_kernel = self.kernel(self.X, self.X)
         #print('done')
 
         # Creating matrix J [I (l x l), 0 (l x (l+u))]
-        J = np.concatenate([np.identity(l), np.zeros(l * u).reshape(l, u)], axis=1)
+        J = np.concatenate([np.identity(self.l), np.zeros(self.l * u).reshape(self.l, u)], axis=1)
 
         ###########################################################################
         
         # Computing "almost" alpha
         #print('Inverting matrix', end='...')
-        almost_alpha = np.linalg.inv(2 * self.lambda_k * np.identity(l + u) \
-                                     + ((2 * self.lambda_u) / (l + u) ** 2) * self.L.dot(K)).dot(J.T).dot(Y)
+        almost_alpha = np.linalg.inv(2 * self.lambda_k * np.identity(self.l + u) \
+                                     + ((2 * self.lambda_u) / (self.l + u) ** 2) * self.L.dot(self.matriz_kernel)).dot(J.T).dot(Y)
         
         # Computing Q
-        Q = Y.dot(J).dot(K).dot(almost_alpha)
+        Q = Y.dot(J).dot(self.matriz_kernel).dot(almost_alpha)
         #print('done')
         
         # Memory optimization
@@ -89,7 +79,7 @@ class LapSVM(object):
         
         #print('Solving beta', end='...')
         
-        e = np.ones(l)
+        e = np.ones(self.l)
         q = -e
         
         # ===== Objectives =====
@@ -99,12 +89,9 @@ class LapSVM(object):
         def objective_grad(beta):
             return np.squeeze(np.array(beta.T.dot(Q) + q))
         
-        def hessian_zero(beta):
-            return np.zeros((len(beta), len(beta)))
-
         # =====Constraint(1)=====
         #   0 <= beta_i <= 1 / l
-        bounds = [(0, 1 / l) for _ in range(l)]
+        bounds = [(0, 1 / self.l) for _ in range(self.l)]
         
         # =====Constraint(2)=====
         #  Y.dot(beta) = 0
@@ -118,12 +105,10 @@ class LapSVM(object):
         cons = {'type': 'eq', 'fun': constraint_func, 'jac': constraint_grad}
         
         # ===== Solving =====
-        x0 = np.zeros(l)
+        x0 = np.zeros(self.l)
         
-        #beta_hat = sco.minimize(objective_func, x0, jac=objective_grad, \
-        #                        constraints=cons, bounds=bounds, method='SLSQP')['x']
-        beta_hat = sco.minimize(objective_func, x0, jac=objective_grad, hess=hessian_zero, \
-                                constraints=cons, bounds=bounds, method='trust-constr')['x']
+        beta_hat = sco.minimize(objective_func, x0, jac=objective_grad, \
+                                constraints=cons, bounds=bounds, method='SLSQP')['x']
                 
         #print('done')
         
@@ -138,9 +123,9 @@ class LapSVM(object):
         
         # Finding optimal decision boundary b using labeled data
         #new_K = self.kernel(self.X, X)
-        indices_X = np.arange(l)  
+        indices_X = np.arange(self.l)
         #new_K = self.kernel(self.X, X)
-        new_K = K[:, indices_X]
+        new_K = self.matriz_kernel[:, indices_X]
         f = np.squeeze(np.array(self.alpha)).dot(new_K)
         
         def to_minimize(b):
@@ -153,7 +138,11 @@ class LapSVM(object):
         
         #print("feito")
 
-    def predict(self, Xtest):
+        predictions = self.predict()
+
+        return predictions
+
+    def predict(self):
         """
         Parameters
         ----------
@@ -167,26 +156,12 @@ class LapSVM(object):
         """
         #print("inicializando LapSVM predict", end="... ")
         # Computing K_new for X
-        new_K = self.kernel(self.X, Xtest)
+        #new_K = self.kernel(self.X, Xtest)
+        new_K = self.matriz_kernel[:, self.l:]
         f = np.squeeze(np.array(self.alpha)).dot(new_K)
         predictions = np.array((f > self.b) * 1)
         #print("feito")
         return predictions
-    
-
-    def accuracy(self, Xtest, Ytrue):
-        """
-        Parameters
-        ----------
-        Xtest : ndarray shape (n_samples, n_features)
-            Test data
-        Ytrue : ndarray shape (n_samples, )
-            Test labels
-        """
-        predictions = self.predict(Xtest)
-        accuracy = sum(predictions == Ytrue) / len(predictions)
-        print('Accuracy: {}%'.format(round(accuracy * 100, 2)))
-
     
     def kernel(self, X, Y ):
 
@@ -234,12 +209,9 @@ def propagar_LapSVM(dados, L, posicoes_rotulos, ordemObjetos, rotulos, classes, 
             if Yl[j] == rotulo:
                 yl_one_versus_all[j] = 1
             else:
-                yl_one_versus_all[j] = 0
+                yl_one_versus_all[j] = -1
         
-
-        propagacao_LapSVM.fit(dados_rotulados, dados_nao_rotulados, yl_one_versus_all)
-
-        rotulos_propagados = propagacao_LapSVM.predict(dados_nao_rotulados)
+        rotulos_propagados = propagacao_LapSVM.labelDiffusion(dados_rotulados, dados_nao_rotulados, yl_one_versus_all)
 
         # Formatacao dos dados nao rotulados
         ordemNaoRotulado = ordemObjetos[len(posicoes_rotulos):]
