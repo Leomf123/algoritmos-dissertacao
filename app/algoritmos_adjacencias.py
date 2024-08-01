@@ -1,15 +1,19 @@
 import numpy as np
 from sklearn.neighbors import kneighbors_graph
+
 from utils import primMST
 
 # KNN para calcular a matriz de adjacencias
 # entrada: matriz de distancia, k e tipo
 # saida: matriz de adjacencia
-def knn(dados, matriz_distancia, k, tipo):
+def knn(dados, matriz_distancia, medida_distancia, k, tipo):
+
+  # Converte em bool para usar a rogerstanimoto sem da warning
+  if medida_distancia == 'rogerstanimoto':
+     dados = dados.astype(bool)
 
   #print("inicializando " + tipo, end="... ")
-
-  matriz_adjacencia =  kneighbors_graph(dados, k, mode='connectivity').toarray()
+  matriz_adjacencia =  kneighbors_graph(dados, k, mode='connectivity',  metric = medida_distancia, include_self=False).toarray()
 
   matriz_adjacencia_transposta = matriz_adjacencia.T
 
@@ -20,8 +24,8 @@ def knn(dados, matriz_distancia, k, tipo):
     for i in range(matriz_adjacencia.shape[0]):
       # checar se ta isolado
       if np.sum(matriz_adjacencia[i]) == 0:
-        # k_indices = np.argsort(matriz_distancia[i])[:2]
-        k_indices = np.argpartition(matriz_distancia[i], 2)[:2]
+        k_indices = np.argsort(matriz_distancia[i])[:2]
+        #k_indices = np.argpartition(matriz_distancia[i], 2)[:2]
         for k in k_indices:
           if i != k:
             matriz_adjacencia[i][k] = 1
@@ -44,10 +48,10 @@ def MST(matriz_distancias, mpts):
     # 1- Calcular a core distance
     core_distance = np.zeros(matriz_distancias.shape[0])
     for i in range(matriz_distancias.shape[0]):
-        # Descobre os k indices os quais i vai ter aresta pra eles - incluo ele mesmo
-        # vizinhos = np.sort(matriz_distancias[i])[:mpts]
-        vizinhos = np.partition(matriz_distancias[i], mpts)[:mpts]
-        core_distance[i] = np.max(vizinhos)
+        # Descobre os k indices os quais i vai ter aresta pra eles - incluo ele
+        distancias_vizinhos = np.sort(matriz_distancias[i])[:mpts]
+        #vizinhos = np.partition(matriz_distancias[i], mpts)[:mpts]
+        core_distance[i] = distancias_vizinhos[-1]
 
     # 2- Criar grafo de Mutual Reachability Distance
     grafoMRD = np.zeros((matriz_distancias.shape[0],matriz_distancias.shape[1]))
@@ -64,10 +68,10 @@ def MST(matriz_distancias, mpts):
 
     return MST
 
-def gerar_matriz_adjacencias(dados, matriz_distancias, k = 4, algoritmo = 'mutKNN'):
+def gerar_matriz_adjacencias(dados, matriz_distancias, medida_distancia, k = 4, algoritmo = 'mutKNN'):
   
   if algoritmo in ['mutKNN', 'symKNN', 'symFKNN']:
-    return knn(dados, matriz_distancias, k, algoritmo)
+    return knn(dados, matriz_distancias, medida_distancia, k, algoritmo)
   
   elif algoritmo == "MST":
     return MST(matriz_distancias, k)
