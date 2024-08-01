@@ -2,7 +2,7 @@ import sys
 import os
 
 # Caminho absoluto para o diretório que contém o módulo
-caminho_diretorio = os.path.join(os.path.dirname(__file__), 'LapSVM-trust-constr', 'app')
+caminho_diretorio = os.path.join(os.path.dirname(__file__), 'algoritmos-dissertacao', 'app')
 # Adiciona o diretório ao sys.path
 sys.path.append(caminho_diretorio)
 
@@ -56,7 +56,7 @@ def main():
 
     Quantidade_experimentos = 1
 
-    Propagacao = ["LapSVM"]
+    Propagacao = ["GRF", "RMGT", "LGC", "LapRLS", "LapSVM"]
     
     teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_experimentos, Propagacao)
 
