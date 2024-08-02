@@ -37,9 +37,9 @@ def RMGT(posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRo
 
   f1 = -np.linalg.inv(LNaoRotulado).dot(LNaoRotuladoRotulado.dot(yl))
 
-  f2 = ((np.linalg.inv(LNaoRotulado).dot(vetor_1))/(vetor_1.T.dot((-np.linalg.inv(LNaoRotulado)).dot(vetor_1))))
+  f2 = (np.linalg.inv(LNaoRotulado).dot(vetor_1)) / (vetor_1.T.dot((np.linalg.inv(LNaoRotulado)).dot(vetor_1)))
 
-  f3 = (len(ordemObjetos)*omega.T-vetor_2.T.dot(yl+vetor_1.T.dot((-np.linalg.inv(LNaoRotulado)).dot(LNaoRotuladoRotulado.dot(yl)))))
+  f3 = len(ordemObjetos)*omega.T - vetor_2.T.dot(yl) - vetor_1.T.dot(f1)
     
   f4 = f2.dot(f3)
 
