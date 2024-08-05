@@ -61,7 +61,7 @@ def teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_ex
 
                     simetrica, conectado = checar_matrix_adjacencias(matriz_pesos)
 
-                    del matriz_distancias, matriz_adjacencias
+                    #del matriz_distancias, matriz_adjacencias
                     # 5 - Para cada quantidade de rotulos
                     for r in Quantidade_rotulos:
 
@@ -82,7 +82,7 @@ def teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_ex
                             matriz_rotulos = one_hot(rotulos_semissupervisionado)
                             yl = matriz_rotulos[posicoes_rotulos,:]
 
-                            del matriz_pesos
+                            #del matriz_pesos
                             #7 - Para cada algoritmo de classificação semi
                             for propagacao in Propagacao:
                                 # Propagar rotulos
