@@ -1,4 +1,4 @@
-from numpy.linalg import solve
+from scipy.optimize import minimize, nnls
 import numpy as np
 
 
@@ -40,45 +40,60 @@ def HM(matriz_distancias, k):
 
 def LLE(dados, matriz_adjacencia):
 
-  #print("Inicializando LLE", end="... " )
+    #print("Inicializando LLE", end="... " )
 
-  matriz_pesos = np.zeros((matriz_adjacencia.shape[0],matriz_adjacencia.shape[1]))
+    matriz_pesos = np.zeros((matriz_adjacencia.shape[0],matriz_adjacencia.shape[1]))
 
-  X = dados.T
-
-  for i in range(X.shape[1]):
+      
+    for i in range(dados.shape[0]):
     
-    # Criar matriz Z com os vizinhos de Xi
-    posicoes = np.where(matriz_adjacencia[i,:] != 0)[0]
-    Z = np.array(X[:,posicoes])
-    # Subtrair Xi de Z
-    for j in range(Z.shape[1]):
-      Z[:,j] = Z[:,j]-X[:,i]
+        # Criar matriz Z com os vizinhos de Xi
+        posicoes = np.where(matriz_adjacencia[i,:] != 0)[0]
+        Z = dados[posicoes] - dados[i]
     
-    # Variancia Local
-    C = Z.T @ Z
+        # Variancia Local
+        C = np.dot(Z, Z.T).astype(float)
+
+        C += np.eye(len(posicoes)) * 0.001
+
+        try:
+
+            # Resolve o sistema linear C * w = 1
+            ones = np.ones(len(posicoes))
+            w, _ = nnls(C, ones)
+            # Normaliza os pesos
+            w /= np.sum(w)
+        
+        except Exception as e:
+            
+            # Função objetivo para a otimização
+            def obj(w):
+                return w @ C @ w
+        
+            # Restrições para o problema
+            # Soma dos pesos deve ser 1
+            cons = [
+                {'type': 'eq', 'fun': lambda w: np.sum(w) - 1}
+            ]
+        
+            # Limites para os pesos (não negativos)
+            bounds = [(0, None)] * len(posicoes)
+        
+            # Resolver o problema de otimização
+            x0 = np.zeros(len(posicoes))
+            w = minimize(obj, x0, bounds=bounds, constraints=cons).x
+
+        matriz_pesos[i, posicoes] = w
     
-    if C.dtype == 'int' or C.dtype == 'int64':
-      C = C.astype(np.float64)
+    symFKNN = np.any(matriz_adjacencia == 2)
+    if symFKNN:
+        matriz_pesos = matriz_pesos * matriz_adjacencia
 
-    C += np.eye(C.shape[0]) + 0.00001
-    
-    # Resolve o sistema linear C * w = 1
-    ones = np.ones(len(posicoes))
-    w = solve(C, ones)
-   
-    for j in range(len(w)):
-      matriz_pesos[i][posicoes[j]] = w[j]/ np.sum(w)
-    
-  symFKNN = np.any(matriz_adjacencia == 2)
-  if symFKNN:
-    matriz_pesos = matriz_pesos * matriz_adjacencia
+    matriz_pesos = 1/2*(matriz_pesos + matriz_pesos.T)
 
-  matriz_pesos = 1/2*(matriz_pesos + matriz_pesos.T)
+    #print("feito")
 
-  #print("feito")
-
-  return matriz_pesos
+    return matriz_pesos
 
 
 def gerar_matriz_pesos(dados, matriz_adjacencias, matriz_distancias, sigma = 0.2, k = 2, algoritmo = "RBF"):
