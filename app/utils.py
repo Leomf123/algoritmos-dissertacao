@@ -106,12 +106,12 @@ def divisao_L(matriz_pesos, posicoes_rotulos, ordemObjetos):
 
 
 
-def gravar_resultados(test_ID, nome_dataset, k, adjacencia, simetrica, conectado, ponderacao, r, e, propagacao, seed, tempo, nRotulos, acuracia, f_measure):
+def gravar_resultados(test_ID, nome_dataset, k, adjacencia, simetrica, conectado, positivo, ponderacao, r, e, propagacao, seed, nRotulos, acuracia, f_measure):
     
     if test_ID == 0: 
 
         # Criando um dataframe
-        dados = [{'test_ID': test_ID, 'Dataset': nome_dataset, 'Adjacencia': adjacencia, 'k': k, 'Ponderacao': ponderacao, 'Simetrica': simetrica, 'Conectado': conectado, 'Propagacao': propagacao, 'PorcRot': r, 'NumExp': e, 'SeedExp': seed, 'TempExp': tempo, 'NumNRot': nRotulos, 'Acuracia': acuracia, 'F_measure': f_measure}]
+        dados = [{'test_ID': test_ID, 'Dataset': nome_dataset, 'Adjacencia': adjacencia, 'k': k, 'Ponderacao': ponderacao, 'Simetrica': simetrica, 'Conectado': conectado, 'Positivo': positivo, 'Propagacao': propagacao, 'PorcRot': r, 'NumExp': e, 'SeedExp': seed, 'NumNRot': nRotulos, 'Acuracia': acuracia, 'F_measure': f_measure}]
 
         df = pd.DataFrame(dados)
         # salvo arquivo csv
@@ -123,7 +123,7 @@ def gravar_resultados(test_ID, nome_dataset, k, adjacencia, simetrica, conectado
         df = pd.read_csv('Resultados.csv')
   
         # Adicionando dados
-        dados = [{'test_ID': test_ID, 'Dataset': nome_dataset, 'Adjacencia': adjacencia, 'k': k, 'Ponderacao': ponderacao, 'Simetrica': simetrica, 'Conectado': conectado, 'Propagacao': propagacao, 'PorcRot': r, 'NumExp': e, 'SeedExp': seed, 'TempExp': tempo, 'NumNRot': nRotulos, 'Acuracia': acuracia, 'F_measure': f_measure}]
+        dados = [{'test_ID': test_ID, 'Dataset': nome_dataset, 'Adjacencia': adjacencia, 'k': k, 'Ponderacao': ponderacao, 'Simetrica': simetrica, 'Conectado': conectado, 'Positivo': positivo, 'Propagacao': propagacao, 'PorcRot': r, 'NumExp': e, 'SeedExp': seed, 'NumNRot': nRotulos, 'Acuracia': acuracia, 'F_measure': f_measure}]
 
         dados = pd.DataFrame(dados)
         df = pd.concat([df, dados], ignore_index=True)

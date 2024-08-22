@@ -59,7 +59,7 @@ def teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_ex
                     # Gerar matriz pesos
                     matriz_pesos = gerar_matriz_pesos(dados, matriz_adjacencias , matriz_distancias, sigma, k, ponderacao)
 
-                    simetrica, conectado = checar_matrix_adjacencias(matriz_pesos)
+                    simetrica, conectado, positivo = checar_matrix_adjacencias(matriz_pesos)
 
                     #del matriz_distancias, matriz_adjacencias
                     # 5 - Para cada quantidade de rotulos
@@ -95,14 +95,11 @@ def teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_ex
                                 # Usar medidas de qualidade
                                 acuracia, f_measure, nRotulos = medidas_qualidade(posicoes_rotulos, ordemObjetos, rotulos, rotulos_propagados)
 
-                                # Gravar tempo que levou
-                                fim = time.time()
-                                tempo = (fim - inicio) / 60
 
                                 # gravar resultado em uma linha usando pandas
-                                gravar_resultados(test_ID, nome_dataset, k, adjacencia, simetrica, conectado, ponderacao, r, e, propagacao, seeds[e], tempo, nRotulos, acuracia, f_measure)
+                                gravar_resultados(test_ID, nome_dataset, k, adjacencia, simetrica, conectado, positivo, ponderacao, r, e, propagacao, seeds[e], nRotulos, acuracia, f_measure)
 
-                                #print("test_ID: ", test_ID)
+                                print("test_ID: ", test_ID, ' ', nRotulos)
 
                                 test_ID += 1
     fim_geral = time.time()
