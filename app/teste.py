@@ -99,7 +99,7 @@ def teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_ex
                                 # gravar resultado em uma linha usando pandas
                                 gravar_resultados(test_ID, nome_dataset, k, adjacencia, simetrica, conectado, positivo, ponderacao, r, e, propagacao, seeds[e], nRotulos, acuracia, f_measure)
 
-                                print("test_ID: ", test_ID, ' ', nRotulos)
+                                #print("test_ID: ", test_ID, ' ', nRotulos)
 
                                 test_ID += 1
     fim_geral = time.time()
