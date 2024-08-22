@@ -15,6 +15,7 @@ def checar_matrix_adjacencias(matriz_adjacencias):
 
     simetrica = True
     conectado = True
+    positivo = True
     for i in range(matriz_adjacencias.shape[0]):
         if np.sum(matriz_adjacencias[i]) == 0:
             conectado = False
@@ -22,7 +23,10 @@ def checar_matrix_adjacencias(matriz_adjacencias):
             if matriz_adjacencias[i][j] != matriz_adjacencias[j][i]:
                 simetrica = False
     
-    return simetrica, conectado
+    if (np.any(matriz_adjacencias < 0)):
+        positivo = False
+
+    return simetrica, conectado, positivo
 
 def primMST(grafo):
     V = len(grafo)  
