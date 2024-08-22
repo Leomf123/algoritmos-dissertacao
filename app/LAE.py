@@ -28,7 +28,6 @@ def LAE(X,U,matriz_adjacencia):
         beta_seq = 1
         t = 0
         while t == 0 or (np.linalg.norm(old_z_seq - z_seq) > eps and t < 10):
-            print(t)
             t += 1
             alpha = (old_delta_seq - 1) / delta_seq
             v = z_seq + alpha*(z_seq - old_z_seq)
@@ -44,7 +43,5 @@ def LAE(X,U,matriz_adjacencia):
                 j += 1
             old_delta_seq = delta_seq
             delta_seq = (1 + np.sqrt(1 + 4*delta_seq**2))/2
-        print(s, end='   ')
-        print(z_seq.shape)
         Z[i,i_nn] = z_seq
     return np.squeeze(Z)
