@@ -50,13 +50,13 @@ def main():
 
     Adjacencia = ["mutKNN", "symKNN", "symFKNN", "MST"]
 
-    Ponderacao = ["RBF", "HM", "LLE"]
+    Ponderacao = ["LLE"]
 
     Quantidade_rotulos = [0.02, 0.05, 0.08, 0.1]
 
-    Quantidade_experimentos = 30
+    Quantidade_experimentos = 1
 
-    Propagacao = ["GRF", "RMGT", "LGC", "LapRLS", "LapSVM"]
+    Propagacao = ["GRF", "LGC"]
     
     teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_experimentos, Propagacao)
 
