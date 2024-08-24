@@ -37,10 +37,10 @@ def main():
         "wine-187.data",
         "banknote-authentication.data",
         "yeast_Galactose.data",
-        "semeion.data",
-        "wdbc.data",
         "mfeat-karhunen.data",
         "mfeat-factors.data",
+        "semeion.data",
+        "wdbc.data",
         "stock.data",
         "segmentation-normcols.data",
         "cardiotocography.data",
@@ -50,13 +50,13 @@ def main():
 
     Adjacencia = ["mutKNN", "symKNN", "symFKNN", "MST"]
 
-    Ponderacao = ["LLE"]
+    Ponderacao = ["RBF", "HM", "LLE"]
 
     Quantidade_rotulos = [0.02, 0.05, 0.08, 0.1]
 
-    Quantidade_experimentos = 1
+    Quantidade_experimentos = 30
 
-    Propagacao = ["GRF", "LGC"]
+    Propagacao = ["GRF", "RMGT", "LGC", "LapRLS", "LapSVM"]
     
     teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_experimentos, Propagacao)
 
