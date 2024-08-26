@@ -54,7 +54,7 @@ def main():
 
     Quantidade_rotulos = [0.02, 0.05, 0.08, 0.1]
 
-    Quantidade_experimentos = 30
+    Quantidade_experimentos = 20
 
     Propagacao = ["GRF", "RMGT", "LGC", "LapRLS", "LapSVM"]
     
