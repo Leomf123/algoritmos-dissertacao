@@ -13,6 +13,23 @@ from teste import teste
 def main():
     
     datasets = [
+        "semeion.data",
+        "wdbc.data",
+        "stock.data",
+        "segmentation-normcols.data",
+        "cardiotocography.data",
+        "analcatdata_authorship-458.data",
+        "wine-187.data",
+        "banknote-authentication.data",
+        "yeast_Galactose.data",
+        "mfeat-karhunen.data",
+        "mfeat-factors.data",
+        "chscase_geyser1.data",
+        "diggle_table.data",
+        "gordon2002.data",
+        "articles_1442_5.data",
+        "articles_1442_80.data",
+        "iris.data",
         "armstrong2002v1.data",
         "chowdary2006.data",
         "ace_ECFP_4.data",
@@ -27,23 +44,6 @@ def main():
         "transplant.data",
         "autoPrice.data",
         "seeds.data",
-        "chscase_geyser1.data",
-        "diggle_table.data",
-        "gordon2002.data",
-        "articles_1442_5.data",
-        "articles_1442_80.data",
-        "iris.data",
-        "analcatdata_authorship-458.data",
-        "wine-187.data",
-        "banknote-authentication.data",
-        "yeast_Galactose.data",
-        "mfeat-karhunen.data",
-        "mfeat-factors.data",
-        "semeion.data",
-        "wdbc.data",
-        "stock.data",
-        "segmentation-normcols.data",
-        "cardiotocography.data",
     ]
 
     K = [2, 4, 6, 8, 10, 12, 14, 16]
@@ -54,9 +54,9 @@ def main():
 
     Quantidade_rotulos = [0.02, 0.05, 0.08, 0.1]
 
-    Quantidade_experimentos = 30
+    Quantidade_experimentos = 2
 
-    Propagacao = ["GRF", "RMGT", "LGC", "LapRLS", "LapSVM"]
+    Propagacao = ["LapSVM"]
     
     teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_experimentos, Propagacao)
 

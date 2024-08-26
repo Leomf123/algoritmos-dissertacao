@@ -86,8 +86,8 @@ def teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_ex
                             #7 - Para cada algoritmo de classificação semi
                             for propagacao in Propagacao:
                                 # Propagar rotulos
-                                lambda_k = 0.01
-                                lambda_u = 0.01
+                                lambda_k = 0.0001
+                                lambda_u = 0.0001
                                 # Usado no LGC
                                 parametro_regularizacao = 0.01
                                 rotulos_propagados = propagar(dados, L, posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada, yl, rotulos_semissupervisionado, matriz_rotulos, classes, medida_distancia, k, lambda_k, lambda_u, omega, parametro_regularizacao, propagacao)
@@ -99,7 +99,7 @@ def teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_ex
                                 # gravar resultado em uma linha usando pandas
                                 gravar_resultados(test_ID, nome_dataset, k, adjacencia, simetrica, conectado, positivo, ponderacao, r, e, propagacao, seeds[e], nRotulos, acuracia, f_measure)
 
-                                #print("test_ID: ", test_ID, ' ', nRotulos)
+                                print("test_ID: ", test_ID, ' ', nRotulos)
 
                                 test_ID += 1
     fim_geral = time.time()
