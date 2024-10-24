@@ -14,7 +14,7 @@ def RBF(matriz_distancias, sigma):
   matriz_kernel = np.zeros((n, n))
   for i in range(n):
     for j in range(n):
-      matriz_kernel[i][j] = np.exp(-1*(matriz_distancias[i][j]**2)/2*(sigma**2))
+      matriz_kernel[i][j] = np.exp(-1*(matriz_distancias[i][j]**2)/(2*(sigma**2)))
   
   #print("feito")
 

@@ -66,7 +66,7 @@ class LapRLS(object):
         
         for i in range(matriz_distancia.shape[0]):
             for j in range(matriz_distancia.shape[1]):
-                matriz_kernel[i][j] = np.exp(-1*(matriz_distancia[i][j]**2)/2*(sigma**2))
+                matriz_kernel[i][j] = np.exp(-1*(matriz_distancia[i][j]**2)/(2*(sigma**2)))
 
         return matriz_kernel
 
