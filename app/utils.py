@@ -115,12 +115,12 @@ def gravar_resultados(test_ID, nome_dataset, k, adjacencia, simetrica, conectado
 
         df = pd.DataFrame(dados)
         # salvo arquivo csv
-        df.to_csv('Resultados.csv', index=False)
+        df.to_csv('Resultados23.csv', index=False)
 
     else:
         
         # leio arquivo csv existente e salvo df
-        df = pd.read_csv('Resultados.csv')
+        df = pd.read_csv('Resultados23.csv')
   
         # Adicionando dados
         dados = [{'test_ID': test_ID, 'Dataset': nome_dataset, 'Adjacencia': adjacencia, 'k': k, 'Ponderacao': ponderacao, 'Simetrica': simetrica, 'Conectado': conectado, 'Positivo': positivo, 'Propagacao': propagacao, 'PorcRot': r, 'NumExp': e, 'SeedExp': seed, 'NumNRot': nRotulos, 'Acuracia': acuracia, 'F_measure': f_measure}]
@@ -129,7 +129,7 @@ def gravar_resultados(test_ID, nome_dataset, k, adjacencia, simetrica, conectado
         df = pd.concat([df, dados], ignore_index=True)
 
         # salvo arquivo csv mesmo lugar do outro
-        df.to_csv('Resultados.csv', index=False)
+        df.to_csv('Resultados23.csv', index=False)
 
 
 def definir_medida_distancia(nome_dado):
