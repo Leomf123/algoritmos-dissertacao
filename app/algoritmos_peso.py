@@ -14,7 +14,7 @@ def RBF(matriz_distancias, sigma):
   matriz_kernel = np.zeros((n, n))
   for i in range(n):
     for j in range(n):
-      matriz_kernel[i][j] = np.exp(-1*np.power(2,matriz_distancias[i][j])/2*np.power(2,sigma))
+      matriz_kernel[i][j] = np.exp(-1*(matriz_distancias[i][j]**2)/2*(sigma**2))
   
   #print("feito")
 
@@ -33,7 +33,7 @@ def HM(matriz_distancias, k):
     psi_i = np.sort(matriz_distancias[i])[:k+1]
     for j in range(n):
       psi_j = np.sort(matriz_distancias[j])[:k+1]
-      matriz_kernel[i][j] = np.exp(-1*np.power(2,matriz_distancias[i][j])/np.power(2,max(psi_i[-1],psi_j[-1])))
+      matriz_kernel[i][j] = np.exp(-1*(matriz_distancias[i][j]**2)/(max(psi_i[-1],psi_j[-1])**2))
   
   #print("feito")
 
