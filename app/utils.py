@@ -187,7 +187,6 @@ def normalizar_dados(nome_dado, dados):
         "banknote-authentication.data",
         "stock.data",
         "transplant.data",
-        "diggle_table.data",
     ]    
 
     dados_normalizados = np.array(dados)
