@@ -146,7 +146,10 @@ def definir_medida_distancia(nome_dado):
         "transplant.data",
         "wdbc.data",
         "wine-187.data",
-        "yeast_Galactose.data"
+        "yeast_Galactose.data",
+        "mfeat-factors.data",
+        "mfeat-karhunen.data",
+        "cardiotocography.data"
     ]    
     datasets_tanimoto = [
         "ace_ECFP_4.data",
@@ -167,10 +170,7 @@ def definir_medida_distancia(nome_dado):
         "armstrong2002v1.data",
         "chowdary2006.data",
         "gordon2002.data",
-        "semeion.data",
-        "mfeat-factors.data",
-        "mfeat-karhunen.data",
-        "cardiotocography.data",
+        "semeion.data"
     ]
 
     if nome_dado in datasets_tanimoto:
@@ -186,8 +186,7 @@ def normalizar_dados(nome_dado, dados):
         "autoPrice.data",
         "banknote-authentication.data",
         "stock.data",
-        "transplant.data",
-        "diggle_table.data",
+        "transplant.data"
     ]    
 
     dados_normalizados = np.array(dados)
