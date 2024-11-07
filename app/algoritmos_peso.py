@@ -33,7 +33,7 @@ def HM(matriz_distancias, k):
     psi_i = np.sort(matriz_distancias[i])[:k+1]
     for j in range(n):
       psi_j = np.sort(matriz_distancias[j])[:k+1]
-      matriz_kernel[i][j] = np.exp(-1*(matriz_distancias[i][j]**2)/(max(psi_i[-1],psi_j[-1])**2))
+      matriz_kernel[i][j] = np.exp(-1*(matriz_distancias[i][j]**2)/(max(psi_i[-1], psi_j[-1], 1e-10)**2))
   
   #print("feito")
 
