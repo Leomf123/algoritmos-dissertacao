@@ -146,7 +146,8 @@ def definir_medida_distancia(nome_dado):
         "transplant.data",
         "wdbc.data",
         "wine-187.data",
-        "yeast_Galactose.data"
+        "yeast_Galactose.data",
+        "mfeat-karhunen.data"
     ]    
     datasets_tanimoto = [
         "ace_ECFP_4.data",
@@ -169,7 +170,6 @@ def definir_medida_distancia(nome_dado):
         "gordon2002.data",
         "semeion.data",
         "mfeat-factors.data",
-        "mfeat-karhunen.data",
         "cardiotocography.data",
     ]
 
