@@ -3,6 +3,21 @@ from sklearn.neighbors import kneighbors_graph
 
 from utils import primMST
 
+def tratamento_no_isolado(matriz_adjacencia, matriz_distancia):
+
+  # Tratamento de pontos isolados
+  matriz = matriz_adjacencia.copy()
+  pontos_isolados = np.where(matriz_adjacencia.sum(axis=1) == 0)[0]
+
+  for i in pontos_isolados:
+    k_indices = np.argsort(matriz_distancia[i])[:2]
+    for k in k_indices:
+      if i != k:
+        matriz[i][k] = 1
+        matriz[k][i] = 1
+
+  return matriz
+
 # KNN para calcular a matriz de adjacencias
 # entrada: matriz de distancia, k e tipo
 # saida: matriz de adjacencia
@@ -12,32 +27,20 @@ def knn(dados, matriz_distancia, medida_distancia, k, tipo):
   if medida_distancia == 'rogerstanimoto':
      dados = dados.astype(bool)
 
-  #print("inicializando " + tipo, end="... ")
   matriz_adjacencia =  kneighbors_graph(dados, k, mode='connectivity',  metric = medida_distancia, include_self=False).toarray()
 
   matriz_adjacencia_transposta = matriz_adjacencia.T
 
   if tipo == 'mutKNN':
-     
     matriz_adjacencia = np.minimum(matriz_adjacencia, matriz_adjacencia_transposta)
 
-    for i in range(matriz_adjacencia.shape[0]):
-      # checar se ta isolado
-      if np.sum(matriz_adjacencia[i]) == 0:
-        k_indices = np.argsort(matriz_distancia[i])[:2]
-        #k_indices = np.argpartition(matriz_distancia[i], 2)[:2]
-        for k in k_indices:
-          if i != k:
-            matriz_adjacencia[i][k] = 1
-            matriz_adjacencia[k][i] = 1
+    matriz_adjacencia = tratamento_no_isolado(matriz_adjacencia, matriz_distancia)
 
   elif tipo == 'symKNN':
     matriz_adjacencia = np.maximum(matriz_adjacencia, matriz_adjacencia_transposta)
 
   elif tipo == 'symFKNN':
     matriz_adjacencia = matriz_adjacencia + matriz_adjacencia_transposta
-  
-  #print("feito")
 
   return matriz_adjacencia
 
