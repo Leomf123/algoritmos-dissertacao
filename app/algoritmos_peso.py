@@ -8,17 +8,7 @@ from LAE import LAE
 # saída: matriz de pesos
 def RBF(matriz_distancias, sigma):
 
-  #print("inicializando RBF", end="... ")
-  n = matriz_distancias.shape[0]
-
-  matriz_kernel = np.zeros((n, n))
-  for i in range(n):
-    for j in range(n):
-      matriz_kernel[i][j] = np.exp(-1*(matriz_distancias[i][j]**2)/(2*(sigma**2)))
-  
-  #print("feito")
-
-  return matriz_kernel
+  return np.exp(-0.5 * (matriz_distancias ** 2) / (sigma ** 2))
 
 # HM Kernel para calcular a matriz de pesos
 # entrada: matriz de adjacencias, matriz de distancias e k
