@@ -14,20 +14,13 @@ def RBF(matriz_distancias, sigma):
 # entrada: matriz de adjacencias, matriz de distancias e k
 # saída: matriz de pesos
 def HM(matriz_distancias, k):
+    
+  # k menores valores por linha, excluindo ele mesmo
+  psi = np.sort(matriz_distancias, axis=1)[:, k]
+  # Construir a matriz de máximos dos psi
+  psi_max = np.maximum.outer(psi, psi)
 
-  #print("Inicializando HM", end="... ")
-  n = matriz_distancias.shape[0]
-
-  matriz_kernel = np.zeros((n, n))
-  for i in range(n):
-    psi_i = np.sort(matriz_distancias[i])[:k+1]
-    for j in range(n):
-      psi_j = np.sort(matriz_distancias[j])[:k+1]
-      matriz_kernel[i][j] = np.exp(-1*(matriz_distancias[i][j]**2)/(max(psi_i[-1], psi_j[-1], 1e-10)**2))
-  
-  #print("feito")
-
-  return matriz_kernel
+  return np.exp(-1 * (matriz_distancias**2) / (psi_max**2))
 
 def LLE(dados, matriz_adjacencia):
 
