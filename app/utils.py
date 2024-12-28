@@ -204,8 +204,9 @@ def retornar_sigma(matriz_distancias, k):
     sigma = 0
     for i in range(n):
         ik = np.sort(matriz_distancias[i])[:k+1]
-        sigma += ik[-1]/(3*n)
-    return sigma
+        sigma += ik[-1]
+
+    return sigma / (3*n)
 
 def retornar_omega(classes):
 
