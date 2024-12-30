@@ -82,7 +82,7 @@ def teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_ex
                             yl = matriz_rotulos[posicoes_rotulos,:]
 
                             # Extracao das submatrizes da matriz laplaciana
-                            LRotulado, LNaoRotulado_inv, formula_comum_grf_rmgt = processar_laplacianas(L, posicoes_rotulos, ordemObjetos, yl)
+                            LRotulado, LNaoRotulado_inv, formula_comum_grf_rmgt, L_ordenada = processar_laplacianas(L, posicoes_rotulos, ordemObjetos, yl)
                             
                             #del matriz_pesos
                             #7 - Para cada algoritmo de classificação semi
@@ -92,7 +92,7 @@ def teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_ex
                                 lambda_u = 0.001
                                 # Usado no LGC
                                 parametro_regularizacao = 0.01
-                                rotulos_propagados = propagar(dados, L, posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotulado_inv, formula_comum_grf_rmgt, L_normalizada, yl, rotulos_semissupervisionado, matriz_rotulos, classes, medida_distancia, k, lambda_k, lambda_u, omega, parametro_regularizacao, propagacao)
+                                rotulos_propagados = propagar(dados, L_ordenada, posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotulado_inv, formula_comum_grf_rmgt, L_normalizada, yl, rotulos_semissupervisionado, matriz_rotulos, classes, medida_distancia, k, lambda_k, lambda_u, omega, parametro_regularizacao, propagacao)
 
                                 # Usar medidas de qualidade
                                 acuracia, f_measure, nRotulos = medidas_qualidade(posicoes_rotulos, ordemObjetos, rotulos, rotulos_propagados)

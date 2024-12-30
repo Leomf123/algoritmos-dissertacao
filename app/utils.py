@@ -106,7 +106,7 @@ def processar_laplacianas(L, posicoes_rotulos, ordemObjetos, yl):
     LNaoRotulado_inv = np.linalg.inv(LNaoRotulado)
     formula_comum_grf_rmgt = LNaoRotulado_inv.dot(LNaoRotuladoRotulado).dot(yl)
 
-    return LRotulado, LNaoRotulado_inv, formula_comum_grf_rmgt
+    return LRotulado, LNaoRotulado_inv, formula_comum_grf_rmgt, L
 
 
 
