@@ -1,37 +1,41 @@
 import numpy as np
 import random
+from collections import defaultdict
 from sklearn.metrics import balanced_accuracy_score, f1_score
 
 # função para retirar rotulos dado uma porcentagem
 # entrada: vetor numpy de rótulos e uma porcetagem pra manter
 # saída: vertor numpy de rotulos com alguns não rotulados
-def retirar_rotulos(rotulos, porcentagem_manter, classes, seed = 100):
- 
+def retirar_rotulos(rotulos, porcentagem_manter, classes, seed=100):
+
   random.seed(seed)
-  
-  quantidade_retirar = int(len(rotulos)*(1 - porcentagem_manter))
-  if len(rotulos)-quantidade_retirar < len(classes):
-    quantidade_retirar = len(rotulos)-len(classes)
+  np.random.seed(seed)
 
-  rotulos_semissupervisionado = np.array(rotulos)
-  
-  # Garante que guardo pelo menos 1 de cada classe
-  posicoes_protegidas = np.zeros(len(classes))
-  for i in range(len(classes)):
-    posicoes = [j for j, v in enumerate(rotulos) if v == classes[i]]
-    posicao_aleatoria = random.randint(0, len(posicoes)-1)
-    posicoes_protegidas[i] = posicoes[posicao_aleatoria]
-  
-  posicoes_aleatorias = np.array([i for i in range(len(rotulos))])
-  posicoes_aleatorias = np.setdiff1d(posicoes_aleatorias, posicoes_protegidas)
-    
-  posicoes_aleatorias = np.array(random.sample(posicoes_aleatorias.tolist(), quantidade_retirar))
-  
-  if len(posicoes_aleatorias) > 0:
-    rotulos_semissupervisionado[posicoes_aleatorias] = 0
+  # Calcula a quantidade de rótulos a remover
+  quantidade_retirar = int(len(rotulos) * (1 - porcentagem_manter))
+  if len(rotulos) - quantidade_retirar < len(classes):
+    quantidade_retirar = len(rotulos) - len(classes)
 
-  return rotulos_semissupervisionado
+  # Pré-processa as posições de cada classe
+  classe_para_posicoes = defaultdict(list)
+  for i, r in enumerate(rotulos):
+    classe_para_posicoes[r].append(i)
 
+  # Garante que pelo menos 1 rótulo por classe será mantido
+  posicoes_protegidas = []
+  for classe in classes:
+    posicoes_protegidas.append(random.choice(classe_para_posicoes[classe]))
+
+  # Define as posições para remoção
+  todas_posicoes = set(range(len(rotulos)))
+  posicoes_removiveis = list(todas_posicoes - set(posicoes_protegidas))
+
+  if quantidade_retirar > 0:
+    posicoes_removidas = np.random.choice(posicoes_removiveis, quantidade_retirar, replace=False)
+    rotulos_semi = np.array(rotulos)
+    rotulos_semi[posicoes_removidas] = 0
+
+  return rotulos_semi
 
 def acuracia(rotulos_originais, rotulos_propagados,rotulos_semissupervisionado):
 
