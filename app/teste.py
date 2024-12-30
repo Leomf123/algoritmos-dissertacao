@@ -8,7 +8,7 @@ from algoritmos_adjacencias import gerar_matriz_adjacencias
 from algoritmos_peso import gerar_matriz_pesos
 from processar_rotulos import retirar_rotulos, medidas_qualidade
 from algoritmos_classificar import propagar
-from utils import ordem_rotulos_primeiro, divisao_L, gravar_resultados, definir_medida_distancia
+from utils import ordem_rotulos_primeiro, gravar_resultados, definir_medida_distancia
 from utils import normalizar_dados, retornar_sigma, retornar_omega, checar_matrix_adjacencias
 from processar_rotulos import one_hot
 
