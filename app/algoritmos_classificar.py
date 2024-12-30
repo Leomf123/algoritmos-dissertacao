@@ -6,11 +6,11 @@ from LapSVM import propagar_LapSVM
 # GRF para calcular a matriz de rótulos propagados
 # entrada: matriz de pesos, rótulos
 # saída: matriz de rótulos propagados
-def GRF(posicoes_rotulos, ordemObjetos, LNaoRotuladoRotulado, LNaoRotulado, yl, rotulos, classes):
+def GRF(posicoes_rotulos, ordemObjetos, formula_comum_grf_rmgt, rotulos):
 
   #print("inicializando GRF", end="... ")
 
-  f = -np.linalg.inv(LNaoRotulado).dot(LNaoRotuladoRotulado.dot(yl))
+  f = -formula_comum_grf_rmgt
 
   # Formatacao dos dados nao rotulados
   ordemNaoRotulado = ordemObjetos[len(posicoes_rotulos):]
@@ -28,22 +28,18 @@ def GRF(posicoes_rotulos, ordemObjetos, LNaoRotuladoRotulado, LNaoRotulado, yl, 
 # RMGT para calcular a matriz de rótulos propagados
 # entrada: matriz de pesos, rótulos e omega
 # saída: matriz de rótulos propagados
-def RMGT(posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, yl, rotulos, omega):
+def RMGT(posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotulado_inv, formula_comum_grf_rmgt, yl, rotulos, omega):
 
   #print("inicializando RMGT", end="... ")
 
-  vetor_1 = np.ones((LNaoRotulado.shape[0],1),dtype=int)
+  vetor_1 = np.ones((LNaoRotulado_inv.shape[0],1),dtype=int)
   vetor_2 = np.ones((LRotulado.shape[0],1),dtype=int)
 
-  f1 = -np.linalg.inv(LNaoRotulado).dot(LNaoRotuladoRotulado.dot(yl))
+  f1 = (LNaoRotulado_inv.dot(vetor_1)) / (vetor_1.T.dot(LNaoRotulado_inv).dot(vetor_1))
 
-  f2 = (np.linalg.inv(LNaoRotulado).dot(vetor_1)) / (vetor_1.T.dot((np.linalg.inv(LNaoRotulado)).dot(vetor_1)))
+  f2 = len(ordemObjetos)*omega.T - vetor_2.T.dot(yl) + vetor_1.T.dot(formula_comum_grf_rmgt)
 
-  f3 = len(ordemObjetos)*omega.T - vetor_2.T.dot(yl) - vetor_1.T.dot(f1)
-    
-  f4 = f2.dot(f3)
-
-  f = f1 + f4
+  f = -formula_comum_grf_rmgt + f1.dot(f2)
 
   # Formatacao dos dados nao rotulados
   ordemNaoRotulado = ordemObjetos[len(posicoes_rotulos):]
@@ -82,13 +78,13 @@ def LGC(L_normalizada, matriz_rotulos, ordemObjetos, posicoes_rotulos, rotulos, 
 
   return resultado
 
-def propagar(dados, L, posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada, yl, rotulos, matriz_rotulos, classes, medida_distancia, k, lambda_k, lambda_u, omega = 0, parametro_regularizacao = 0.99, algoritmo = "GRF"):
+def propagar(dados, L, posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotulado_inv, formula_comum_grf_rmgt, L_normalizada, yl, rotulos, matriz_rotulos, classes, medida_distancia, k, lambda_k, lambda_u, omega = 0, parametro_regularizacao = 0.99, algoritmo = "GRF"):
    
    if algoritmo == "GRF":
-      return GRF(posicoes_rotulos, ordemObjetos, LNaoRotuladoRotulado, LNaoRotulado, yl, rotulos, classes)
+      return GRF(posicoes_rotulos, ordemObjetos, formula_comum_grf_rmgt, rotulos)
    
    elif algoritmo == "RMGT":
-      return RMGT(posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, yl, rotulos, omega)
+      return RMGT(posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotulado_inv, formula_comum_grf_rmgt, yl, rotulos, omega)
    
    elif algoritmo == "LGC":
       return LGC(L_normalizada, matriz_rotulos, ordemObjetos, posicoes_rotulos, rotulos, parametro_regularizacao)

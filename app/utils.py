@@ -74,7 +74,7 @@ def ordem_rotulos_primeiro(rotulos):
 
     return posicoes_rotulos, ordemObjetos
 
-def divisao_L(matriz_pesos, posicoes_rotulos, ordemObjetos):
+def laplacianas(matriz_pesos):
 
     n = matriz_pesos.shape[0]
     
@@ -87,7 +87,12 @@ def divisao_L(matriz_pesos, posicoes_rotulos, ordemObjetos):
     # Laplaciana normalizada
     D_inv_raiz = np.diag(1 / np.sqrt(np.diag(D)))
     L_normalizada = 1.01 * np.eye(n) - D_inv_raiz @ matriz_pesos @ D_inv_raiz
+
+    return L, L_normalizada
     
+
+def processar_laplacianas(L, posicoes_rotulos, ordemObjetos, yl):
+
     # Reordenar matriz laplaciana
     L = L[ordemObjetos, :]
     L = L[:, ordemObjetos]
@@ -98,7 +103,10 @@ def divisao_L(matriz_pesos, posicoes_rotulos, ordemObjetos):
     LNaoRotuladoRotulado = L[nRotulado:, :nRotulado]
     LNaoRotulado = L[nRotulado:, nRotulado:]
 
-    return L, LRotulado, LNaoRotuladoRotulado, LNaoRotulado, L_normalizada
+    LNaoRotulado_inv = np.linalg.inv(LNaoRotulado)
+    formula_comum_grf_rmgt = LNaoRotulado_inv.dot(LNaoRotuladoRotulado).dot(yl)
+
+    return LRotulado, LNaoRotulado_inv, formula_comum_grf_rmgt
 
 
 
