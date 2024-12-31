@@ -50,7 +50,7 @@ class LapRLS(object):
     def predict(self):
        
         # Computing K_new for X
-        new_K = self.matriz_kernel[:, self.l:]
+        new_K = self.matriz_kernel[self.l:, :]
         #new_K = self.kernel(self.X, Xtest)
         f = self.alpha.T.dot(new_K)
 
@@ -58,17 +58,11 @@ class LapRLS(object):
 
     def kernel(self, X, Y ):
 
-        matriz_distancia = cdist(X, Y, self.distancy )
+        matriz_distancias = cdist(X, Y, self.distancy )
         
-        matriz_kernel = np.zeros((matriz_distancia.shape[0],matriz_distancia.shape[1]))
-
-        sigma = retornar_sigma(matriz_distancia, self.k)
+        sigma = retornar_sigma(matriz_distancias, self.k)
         
-        for i in range(matriz_distancia.shape[0]):
-            for j in range(matriz_distancia.shape[1]):
-                matriz_kernel[i][j] = np.exp(-1*(matriz_distancia[i][j]**2)/(2*(sigma**2)))
-
-        return matriz_kernel
+        return np.exp(-0.5 * (matriz_distancias ** 2) / (sigma ** 2))
 
 
 def propagar_LapRLS(dados, L, posicoes_rotulos, ordemObjetos, rotulos, Yl, medida_distancia, k, lambda_k, lambda_u):
