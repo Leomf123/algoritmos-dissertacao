@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import random
-import time
 
 from utils import gerar_matriz_distancias, laplacianas, processar_laplacianas
 from algoritmos_adjacencias import gerar_matriz_adjacencias
@@ -14,12 +13,16 @@ from processar_rotulos import one_hot
 
 def teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_experimentos, Propagacao):
 
-    test_ID = 0
+    indice_dataset = input("Forneca o indice do dataset ( 1 - 31):")
+    indice_dataset = int(indice_dataset)
 
-    inicio_geral = time.time()
+    dataset = []
+    dataset.append(datasets[indice_dataset - 1])
+
+    test_ID = 0
     # 1 - Para cada dataset
-    for nome_dataset in datasets:
-        inicio = time.time()
+    for nome_dataset in dataset:
+
         print("Dataset: ", nome_dataset)
         # Lendo dados
         df = pd.read_csv('data/' + nome_dataset, header=None)
@@ -99,12 +102,8 @@ def teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_ex
 
 
                                 # gravar resultado em uma linha usando pandas
-                                gravar_resultados(test_ID, nome_dataset, k, adjacencia, simetrica, conectado, positivo, ponderacao, r, e, propagacao, seeds[e], nRotulos, acuracia, f_measure)
+                                gravar_resultados(indice_dataset, test_ID, nome_dataset, k, adjacencia, simetrica, conectado, positivo, ponderacao, r, e, propagacao, seeds[e], nRotulos, acuracia, f_measure)
 
                                 #print("test_ID: ", test_ID, ' ', nRotulos)
 
                                 test_ID += 1
-    fim_geral = time.time()
-    tempo_geral = fim_geral - inicio_geral
-    #print("test_ID: ", test_ID)
-    #print("Tempo geral execução (min): ", tempo_geral/60)
