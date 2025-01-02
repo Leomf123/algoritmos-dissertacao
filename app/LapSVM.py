@@ -157,7 +157,7 @@ class LapSVM(object):
         #print("inicializando LapSVM predict", end="... ")
         # Computing K_new for X
         #new_K = self.kernel(self.X, Xtest)
-        new_K = self.matriz_kernel[self.l:, :]
+        new_K = self.matriz_kernel[:, self.l:]
         f = np.squeeze(np.array(self.alpha)).dot(new_K)
         predictions = np.array((f > self.b) * 1)
         #print("feito")
