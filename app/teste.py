@@ -55,7 +55,11 @@ def teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_ex
             # 3 - Para cada algoritmo de adjacencia
             for adjacencia in Adjacencia:
                 # Gerar matriz de adjacencia
-                matriz_adjacencias = gerar_matriz_adjacencias(dados, matriz_distancias, medida_distancia, k, adjacencia)
+                if adjacencia == 'MST':
+                    matriz_adjacencias, grafoMRD = gerar_matriz_adjacencias(dados, matriz_distancias, medida_distancia, k, adjacencia)
+                    matriz_distancias = grafoMRD
+                else:
+                    matriz_adjacencias = gerar_matriz_adjacencias(dados, matriz_distancias, medida_distancia, k, adjacencia)
 
                 # 4 - Para cada ponderação
                 for ponderacao in Ponderacao:

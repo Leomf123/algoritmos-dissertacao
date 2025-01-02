@@ -69,7 +69,7 @@ def MST(matriz_distancias, mpts):
 
     #print("feito")
 
-    return MST
+    return MST, grafoMRD
 
 def gerar_matriz_adjacencias(dados, matriz_distancias, medida_distancia, k = 4, algoritmo = 'mutKNN'):
   
