@@ -157,7 +157,7 @@ class LapSVM(object):
         #print("inicializando LapSVM predict", end="... ")
         # Computing K_new for X
         #new_K = self.kernel(self.X, Xtest)
-        new_K = self.matriz_kernel[:, self.l:]
+        new_K = self.matriz_kernel[self.l:, :]
         f = np.squeeze(np.array(self.alpha)).dot(new_K)
         predictions = np.array((f > self.b) * 1)
         #print("feito")
@@ -165,17 +165,11 @@ class LapSVM(object):
     
     def kernel(self, X, Y ):
 
-        matriz_distancia = cdist(X, Y, self.distancy )
+        matriz_distancias = cdist(X, Y, self.distancy )
         
-        matriz_kernel = np.zeros((matriz_distancia.shape[0],matriz_distancia.shape[1]))
-
-        sigma = retornar_sigma(matriz_distancia, self.k)
+        sigma = retornar_sigma(matriz_distancias, self.k)
         
-        for i in range(matriz_distancia.shape[0]):
-            for j in range(matriz_distancia.shape[1]):
-                matriz_kernel[i][j] = np.exp(-1*(matriz_distancia[i][j]**2)/(2*(sigma**2)))
-
-        return matriz_kernel
+        return np.exp(-0.5 * (matriz_distancias ** 2) / (sigma ** 2))
     
 
 
