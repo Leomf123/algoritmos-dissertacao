@@ -39,7 +39,7 @@ def main():
 
     K = [4, 6, 8, 10, 12, 14, 16]
 
-    Adjacencia = ["mutKNN", "symKNN", "symFKNN", "MST"]
+    Adjacencia = ["MST", "mutKNN", "symKNN", "symFKNN"]
 
     Ponderacao = ["RBF", "HM", "LLE"]
 
@@ -47,7 +47,7 @@ def main():
 
     Quantidade_experimentos = 20
 
-    Propagacao = ["GRF", "RMGT", "LGC", "LapRLS", "LapSVM"]
+    Propagacao = ["LapRLS", "LapSVM", "GRF", "RMGT", "LGC"]
     
     teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_experimentos, Propagacao)
 
