@@ -50,7 +50,7 @@ class LapRLS(object):
     def predict(self):
        
         # Computing K_new for X
-        new_K = self.matriz_kernel[self.l:, :]
+        new_K = self.matriz_kernel[:, self.l:]
         #new_K = self.kernel(self.X, Xtest)
         f = self.alpha.T.dot(new_K)
 
