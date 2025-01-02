@@ -91,7 +91,7 @@ def teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_ex
                                 lambda_k = 0.001
                                 lambda_u = 0.001
                                 # Usado no LGC
-                                parametro_regularizacao = 0.01
+                                parametro_regularizacao = 0.9
                                 rotulos_propagados = propagar(dados, L_ordenada, posicoes_rotulos, ordemObjetos, LRotulado, LNaoRotulado_inv, formula_comum_grf_rmgt, L_normalizada, yl, rotulos_semissupervisionado, matriz_rotulos, classes, medida_distancia, k, lambda_k, lambda_u, omega, parametro_regularizacao, propagacao)
 
                                 # Usar medidas de qualidade
