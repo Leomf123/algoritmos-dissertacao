@@ -12,20 +12,15 @@ def gerar_matriz_distancias(X, Y, medida_distancia ):
 
 
 def checar_matrix_adjacencias(matriz_adjacencias):
-
-    simetrica = True
-    conectado = True
-    positivo = True
-    for i in range(matriz_adjacencias.shape[0]):
-        if np.sum(matriz_adjacencias[i]) == 0:
-            conectado = False
-        for j in range(matriz_adjacencias.shape[1]):
-            if matriz_adjacencias[i][j] != matriz_adjacencias[j][i]:
-                simetrica = False
+    # Checar se a matriz é simétrica
+    simetrica = np.array_equal(matriz_adjacencias, matriz_adjacencias.T)
     
-    if (np.any(matriz_adjacencias < 0)):
-        positivo = False
-
+    # Checar conectividade: nenhuma linha deve ter soma 0
+    conectado = not np.any(np.sum(matriz_adjacencias, axis=1) == 0)
+    
+    # Checar se todos os valores são positivos ou zero
+    positivo = not np.any(matriz_adjacencias < 0)
+    
     return simetrica, conectado, positivo
 
 def primMST(grafo):
@@ -204,13 +199,10 @@ def normalizar_dados(nome_dado, dados):
 
 def retornar_sigma(matriz_distancias, k):
     
-    n = matriz_distancias.shape[0]
-    sigma = 0
-    for i in range(n):
-        ik = np.sort(matriz_distancias[i])[:k+1]
-        sigma += ik[-1]
+    sigma = np.sort(matriz_distancias, axis=1)[:, k]
+    sigma = sigma.sum()
 
-    return sigma / (3*n)
+    return sigma / (3 * matriz_distancias.shape[0])
 
 def retornar_omega(classes):
 
