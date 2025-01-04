@@ -49,22 +49,24 @@ def teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_ex
         del df
         # 2 - Para cada valor de K
         for k in K:
-            # Usado no RBF
-            sigma = retornar_sigma(matriz_distancias, k)
 
             # 3 - Para cada algoritmo de adjacencia
             for adjacencia in Adjacencia:
                 # Gerar matriz de adjacencia
                 if adjacencia == 'MST':
                     matriz_adjacencias, grafoMRD = gerar_matriz_adjacencias(dados, matriz_distancias, medida_distancia, k, adjacencia)
-                    matriz_distancias = grafoMRD
+                    matriz_distancias_atualizada = grafoMRD
                 else:
                     matriz_adjacencias = gerar_matriz_adjacencias(dados, matriz_distancias, medida_distancia, k, adjacencia)
+                    matriz_distancias_atualizada = matriz_distancias
+                
+                # Usado no RBF
+                sigma = retornar_sigma(matriz_distancias_atualizada, k)
 
                 # 4 - Para cada ponderação
                 for ponderacao in Ponderacao:
                     # Gerar matriz pesos
-                    matriz_pesos = gerar_matriz_pesos(dados, matriz_adjacencias , matriz_distancias, sigma, k, ponderacao)
+                    matriz_pesos = gerar_matriz_pesos(dados, matriz_adjacencias, matriz_distancias_atualizada, sigma, k, ponderacao)
 
                     simetrica, conectado, positivo = checar_matrix_adjacencias(matriz_pesos)
 
