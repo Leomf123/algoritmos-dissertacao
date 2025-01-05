@@ -1,7 +1,8 @@
+import sys
 from teste import teste
 
 
-def main():
+def main(indice_dataset):
     
     datasets = [
         "armstrong2002v1.data",
@@ -49,8 +50,11 @@ def main():
 
     Propagacao = ["LapRLS", "LapSVM", "GRF", "RMGT", "LGC"]
     
-    teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_experimentos, Propagacao)
+    teste(indice_dataset, datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_experimentos, Propagacao)
 
 
 if __name__ == "__main__":
-    main()
+
+    indice_dataset = int(sys.argv[1])
+
+    main(indice_dataset)

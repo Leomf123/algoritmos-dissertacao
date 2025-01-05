@@ -11,10 +11,7 @@ from utils import ordem_rotulos_primeiro, gravar_resultados, definir_medida_dist
 from utils import normalizar_dados, retornar_sigma, retornar_omega, checar_matrix_adjacencias
 from processar_rotulos import one_hot
 
-def teste(datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_experimentos, Propagacao):
-
-    indice_dataset = input("Forneca o indice do dataset ( 1 - 31):")
-    indice_dataset = int(indice_dataset)
+def teste(indice_dataset, datasets, K, Adjacencia, Ponderacao, Quantidade_rotulos, Quantidade_experimentos, Propagacao):
 
     dataset = []
     dataset.append(datasets[indice_dataset - 1])
